@@ -43,7 +43,7 @@ function NeuralCanvas() {
           ctx.beginPath();
           ctx.moveTo(a.x, a.y);
           ctx.lineTo(b.x, b.y);
-          ctx.strokeStyle = `rgba(0,229,255,${pulse})`;
+          ctx.strokeStyle = `rgba(247,111,83,${pulse})`;
           ctx.stroke();
         }
       }
@@ -51,7 +51,7 @@ function NeuralCanvas() {
         const r = 4 + Math.sin(t * 2 + n.y * 0.05) * 1.6;
         ctx.beginPath();
         ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-        ctx.fillStyle = "rgba(124,58,237,0.9)";
+        ctx.fillStyle = "rgba(209,207,192,0.9)";
         ctx.fill();
       }
       raf = requestAnimationFrame(draw);

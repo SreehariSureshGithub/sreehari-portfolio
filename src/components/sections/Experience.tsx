@@ -79,7 +79,7 @@ export function Experience() {
                     <ul className="mt-5 space-y-2.5">
                       {job.highlights.map((h) => (
                         <li key={h} className="flex gap-3 text-sm text-muted-foreground">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
                           {h}
                         </li>
                       ))}

@@ -33,7 +33,7 @@ export function Nav() {
       <nav
         aria-label="Main"
         className={`mx-auto flex max-w-6xl items-center justify-between rounded-full px-5 py-3 transition-all duration-500 ${
-          scrolled ? "glass mx-4 md:mx-auto" : "bg-transparent"
+          scrolled ? "glass mx-4 !bg-background/85 backdrop-blur-md md:mx-auto" : "bg-transparent"
         }`}
       >
         <a href="#top" className="group flex items-center gap-2">

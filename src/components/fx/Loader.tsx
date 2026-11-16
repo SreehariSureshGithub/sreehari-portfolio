@@ -42,7 +42,7 @@ export function Loader() {
             style={{ animation: "pulse-ring 1.6s ease-out infinite" }}
           />
           <span
-            className="absolute inset-0 rounded-full border border-accent/40"
+            className="absolute inset-0 rounded-full border border-primary/40"
             style={{ animation: "pulse-ring 1.6s ease-out 0.5s infinite" }}
           />
           <span className="h-8 w-8 rounded-full" style={{ background: "var(--gradient-brand)" }} />

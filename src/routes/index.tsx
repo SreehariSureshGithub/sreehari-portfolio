@@ -41,7 +41,7 @@ function Divider() {
       className="mx-auto h-px w-full max-w-6xl"
       style={{
         background:
-          "linear-gradient(90deg, transparent, color-mix(in oklab, var(--cyan) 35%, transparent), transparent)",
+          "linear-gradient(90deg, transparent, color-mix(in oklab, var(--cyan) 20%, transparent), transparent)",
       }}
     />
   );

@@ -46,7 +46,7 @@ export function Education() {
           {CERTIFICATIONS.map((c, i) => (
             <Reveal key={c} delay={i * 0.05}>
               <div className="glass flex h-full items-center gap-3 p-5 transition-colors duration-300 hover:text-primary">
-                <Award className="h-4.5 w-4.5 shrink-0 text-accent" />
+                <Award className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
                 <p className="text-sm">{c}</p>
               </div>
             </Reveal>

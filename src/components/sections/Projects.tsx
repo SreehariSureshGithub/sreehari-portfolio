@@ -96,7 +96,7 @@ export function Projects() {
                     </div>
 
                     <div className="p-7">
-                      <p className="font-mono text-[10px] tracking-[0.25em] text-accent">
+                      <p className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground">
                         {p.category.toUpperCase()}
                       </p>
                       <h3 className="mt-2 font-display text-xl font-semibold">{p.title}</h3>
@@ -171,7 +171,7 @@ export function Projects() {
                 className="aspect-[16/9] w-full object-cover"
               />
               <div className="p-7">
-                <p className="font-mono text-[10px] tracking-[0.25em] text-accent">
+                <p className="font-mono text-[10px] tracking-[0.25em] text-muted-foreground">
                   {active.category.toUpperCase()}
                 </p>
                 <h3 className="mt-2 font-display text-2xl font-bold">{active.title}</h3>
