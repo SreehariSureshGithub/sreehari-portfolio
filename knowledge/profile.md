@@ -36,5 +36,5 @@ Sreehari is based in Dubai, UAE. He is an Indian national, originally from Keral
 - LinkedIn: https://www.linkedin.com/in/sreeharisureshofficial
 - GitHub: https://github.com/sreeharisureshgithub
 - Portfolio: https://sreeharisuresh.vercel.app
-- Resume (PDF): https://sreeharisuresh.vercel.app/Sreehari_Suresh_AI_Engineer.pdf
+- Resume (PDF): https://sreeharisuresh.vercel.app/Sreehari_Suresh_AI_Engineer_Resume.pdf
 - Phone / WhatsApp: +971 50 862 4546

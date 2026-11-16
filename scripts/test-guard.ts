@@ -484,7 +484,7 @@ check(
 );
 check("config: call link", hrefs.call === "tel:+971508624546", hrefs.call);
 check("config: LinkedIn", hrefs.linkedin === "https://www.linkedin.com/in/sreeharisureshofficial");
-check("config: resume", hrefs.resume === "/Sreehari_Suresh_AI_Engineer.pdf");
+check("config: resume", hrefs.resume === "/Sreehari_Suresh_AI_Engineer_Resume.pdf");
 check(
   "config: call is touch-only",
   CONTACT_ACTIONS.find((a) => a.id === "call")?.touchOnly === true,
