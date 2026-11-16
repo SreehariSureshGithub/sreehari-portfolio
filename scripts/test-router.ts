@@ -3,6 +3,9 @@
 // In-process: no server, no Groq calls. Exits with code 1 if any check fails.
 
 import rawIndex from "../src/server/rag/knowledge-index.server.json" with { type: "json" };
+import { answerCacheKey } from "../src/server/chat/answer-cache.server.ts";
+import { answerSetupHash, isChipFileCurrent } from "../src/server/chat/chip-answers.server.ts";
+import { SYSTEM_PROMPT_HASH, systemPromptHash } from "../src/server/chat/prompt-hash.server.ts";
 import { asksForContactDetails } from "../src/server/chat/contact-actions.server.ts";
 import {
   buildModelMessages,
@@ -10,6 +13,7 @@ import {
   contactLinesAsked,
   resultFigures,
   withoutUsedResults,
+  SANCTIONED_RULE_PHRASES,
   SYSTEM_RULES,
 } from "../src/server/chat/prompt.server.ts";
 import { isJsonRejection, readProviderError } from "../src/server/chat/providers.server.ts";
@@ -22,6 +26,10 @@ import {
   isBareRefusal,
   isHiringMessage,
   isIdentityQuestion,
+  isAiToolQuestion,
+  isTruthChallenge,
+  isAiToolTurn,
+  isRulesChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
   mentionsAssistant,
@@ -40,6 +48,7 @@ import {
 import { CHAT_TEXT } from "../src/lib/chat-copy.ts";
 import {
   EVIDENCE_CHUNK_IDS,
+  KNOWLEDGE_HASH,
   ASSISTANT_CHUNK_IDS,
   CONTACT_PIN_IDS,
   PINNED_CHUNK_IDS,
@@ -1262,6 +1271,178 @@ for (const [q, expected] of assistantMentions)
   );
   const b = withPinnedChunks([fake(PINNED_CHUNK_IDS[0]!)]);
   check("a retrieved pinned chunk isn't duplicated", b.length === PINNED_CHUNK_IDS.length);
+}
+
+// ------------------------------------- no invented negatives, AI tools, truth (2026-11-16) --
+// Live: "Did he use AI tools like Codex or Claude Code?" → "He did not use Codex or Claude".
+check(
+  "rule 1: no negative unless <context> says so; rule 2 limited to history, employers, degrees, certifications",
+  SYSTEM_RULES.includes(
+    "Never state that Sreehari did not do, use, know or have something unless <context> says so explicitly",
+  ) &&
+    SYSTEM_RULES.includes(
+      "Only his work history, employers, degrees and certifications are complete lists",
+    ) &&
+    !SYSTEM_RULES.includes("When <context> gives a complete list"),
+);
+const AI_TOOLS_WORDING =
+  "I don't have information about whether he used an AI tool for that. You can contact him directly for more information.";
+check(
+  "rule 3: the AI-tools reply is a sanctioned phrase and is in the rules",
+  SANCTIONED_RULE_PHRASES.includes(AI_TOOLS_WORDING) && SYSTEM_RULES.includes(AI_TOOLS_WORDING),
+);
+for (const [message, aiTool, truth] of [
+  ["Did he use AI tools?", true, false],
+  ["Did he use AI tools like Codex or Claude Code?", true, false],
+  ["Did he use Codex or Claude Code to build you?", true, false],
+  ["Did he use ChatGPT?", true, false],
+  ["Did he use Copilot or Cursor?", true, false],
+  ["Did he use AI to build this site?", true, false],
+  ["Was it built with Claude?", true, false],
+  ["Did he write every line himself?", true, false],
+  ["Are you lying?", false, true],
+  ["Is this true?", false, true],
+  ["is that true", false, true],
+  ["Is it true that he worked at ISMO Bio-Photonics?", false, false],
+  ["What AI models did he work with?", false, false],
+  ["Does he use AI in his projects?", false, false],
+  ["Did he use YOLO?", false, false],
+  ["What is your stack?", false, false],
+] as [string, boolean, boolean][]) {
+  check(
+    `"${message}" → AI tools ${aiTool}, truth ${truth}; never a hiring message`,
+    isAiToolQuestion(message) === aiTool &&
+      isTruthChallenge(message) === truth &&
+      !isHiringMessage(message),
+  );
+  if (aiTool || truth) {
+    check(
+      `"${message}" → main model, not the router`,
+      !needsRouter({ firstTurn: true, question: message, relevance: 0.2 }) &&
+        !needsRouter({ firstTurn: false, question: message, relevance: 0.9 }) &&
+        isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message),
+    );
+  }
+}
+{
+  const q = [{ role: "user" as const, content: "Did he use Codex or Claude Code to build you?" }];
+  const ai = buildModelMessages(q, [], { aiTools: true });
+  check(
+    "AI-tools note: after the message, the sanctioned wording, no hiring reminder",
+    ai.at(-1)!.role === "system" &&
+      ai.at(-1)!.content.includes(AI_TOOLS_WORDING) &&
+      !ai.some((m) => m.content.startsWith("Reminder for this reply")),
+  );
+  const t = buildModelMessages([{ role: "user", content: "Are you lying?" }], [], {
+    truthChallenge: true,
+  });
+  check(
+    "truth note: after the message, one sentence, only the information Sreehari provided",
+    t.at(-1)!.role === "system" &&
+      t.at(-1)!.content.includes("in one sentence") &&
+      t.at(-1)!.content.includes("only answer from the information Sreehari provided"),
+  );
+  check(
+    "neither note without its flag",
+    !JSON.stringify(buildModelMessages(q, [], {})).includes("Note: the visitor asks whether"),
+  );
+}
+
+// ------------------------------------------ prompt changes invalidate cached answers --
+// The live site kept serving a cached answer written under the old rule 2 (2026-11-16).
+{
+  const changedRules = `${SYSTEM_RULES} (changed)`;
+  const changedRouter = `${ROUTER_INSTRUCTIONS} (changed)`;
+  check(
+    "system-prompt hash: covers the rules and the router instructions",
+    systemPromptHash() === SYSTEM_PROMPT_HASH &&
+      systemPromptHash(changedRules) !== SYSTEM_PROMPT_HASH &&
+      systemPromptHash(SYSTEM_RULES, changedRouter) !== SYSTEM_PROMPT_HASH,
+  );
+  const k = "sha256:knowledge";
+  check(
+    "answer cache key: knowledge hash plus prompt hash; either change gives a new key",
+    answerCacheKey(k).startsWith(`${k}:`) &&
+      answerCacheKey(k).includes(SYSTEM_PROMPT_HASH) &&
+      answerCacheKey(k) !== answerCacheKey(k, systemPromptHash(changedRules)) &&
+      answerCacheKey(k) !== answerCacheKey(k, systemPromptHash(SYSTEM_RULES, changedRouter)) &&
+      answerCacheKey(k) !== answerCacheKey("sha256:other"),
+  );
+  const built = { knowledgeHash: KNOWLEDGE_HASH, promptHash: answerSetupHash() };
+  check(
+    "chip answers: served only when built from these rules and this knowledge",
+    isChipFileCurrent(built) &&
+      !isChipFileCurrent({ ...built, promptHash: answerSetupHash(changedRules) }) &&
+      !isChipFileCurrent(built, KNOWLEDGE_HASH, answerSetupHash(changedRules)) &&
+      !isChipFileCurrent({ ...built, knowledgeHash: "sha256:old" }),
+  );
+}
+
+// ------------------------------- AI-tool follow-ups, "Did he instruct you?" (2026-11-16) --
+{
+  const u = (content: string) => ({ role: "user" as const, content });
+  const a = (content: string) => ({ role: "assistant" as const, content });
+  const t1 = "How did he create you? Did he use any AI tools like chatgpt or claude";
+  const reply = "I don't have information about whether he used an AI tool for that.";
+  check(
+    "AI-tool turn: the three-turn thread is an AI-tool question on every turn",
+    isAiToolTurn([u(t1)]) &&
+      isAiToolTurn([u(t1), a(reply), u("But did he use Claude?")]) &&
+      isAiToolTurn([
+        u(t1),
+        a(reply),
+        u("But did he use Claude?"),
+        a(reply),
+        u("What about chatgpt"),
+      ]),
+  );
+  check(
+    "AI-tool turn: a bare tool name without an earlier AI-tool question is not one",
+    !isAiToolTurn([u("What about chatgpt")]) &&
+      !isAiToolTurn([u("What did he do at ISMO?"), a("He built…"), u("What about chatgpt")]),
+  );
+  for (const t of [t1, "But did he use Claude?", "What about chatgpt"]) {
+    check(`"${t}" is never a hiring message`, !isHiringMessage(t));
+  }
+}
+for (const [message, expected] of [
+  ["Did he instruct you to say this?", true],
+  ["Did Sreehari tell you to say that?", true],
+  ["Why are your answers the same?", true],
+  ["Why do you keep saying that?", true],
+  ["Who told you to say this?", true],
+  ["Did he instruct the team at ISMO?", false],
+  ["Why are his projects the same?", false],
+] as [string, boolean][]) {
+  check(`rules challenge "${message}" → ${expected}`, isRulesChallenge(message) === expected);
+  if (expected) {
+    check(
+      `"${message}" → main model, not the router, no hiring reminder`,
+      !needsRouter({ firstTurn: false, question: message, relevance: 0.9 }) &&
+        isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message) &&
+        !isHiringMessage(message),
+    );
+  }
+}
+{
+  const r = buildModelMessages(
+    [{ role: "user", content: "Did he instruct you to say this?" }],
+    [],
+    {
+      rulesChallenge: true,
+    },
+  );
+  check(
+    "rules note: after the message, one sentence, information plus rules, nothing on his intentions",
+    r.at(-1)!.role === "system" &&
+      r
+        .at(-1)!
+        .content.includes(
+          "answer only from the information Sreehari provided and the rules set for this assistant",
+        ) &&
+      r.at(-1)!.content.includes("never say what he did or did not intend or instruct") &&
+      SYSTEM_RULES.includes("Did he instruct you to say this?"),
+  );
 }
 
 console.log(`\n${count - failures.length}/${count} checks passed.`);

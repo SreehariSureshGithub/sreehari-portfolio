@@ -263,7 +263,7 @@ async function handleChat(request: Request): Promise<Response> {
     const cacheStarted = performance.now();
     const [blocked, hit] = await Promise.all([
       limited(),
-      cache.lookupAnswer(rag.KNOWLEDGE_HASH, queryVector).then((h) => {
+      cache.lookupAnswer(cache.answerCacheKey(rag.KNOWLEDGE_HASH), queryVector).then((h) => {
         timings.cache = ms(cacheStarted);
         return h;
       }),
@@ -294,7 +294,9 @@ async function handleChat(request: Request): Promise<Response> {
   //    router call decides the intent and rewrites the message as a standalone query; if it
   //    fails, times out or its daily cap is reached, the embedding gate decides as before.
   let routed: RouterResult | undefined;
-  if (router.needsRouter({ firstTurn, question, relevance })) {
+  // "Did he use Claude?" (and a follow-up "What about chatgpt"): fixed meaning, no router.
+  const aiTools = router.isAiToolTurn(parsed.messages);
+  if (!aiTools && router.needsRouter({ firstTurn, question, relevance })) {
     const routerStarted = performance.now();
     if (!LIMITS.routerEnabled) routed = { ok: false, reason: "disabled" };
     else if (!(await rl.admitRouterCall())) routed = { ok: false, reason: "capped" };
@@ -371,10 +373,13 @@ async function handleChat(request: Request): Promise<Response> {
   // him a try?"). Every hiring answer invites a conversation, so it gets them too. Anything
   // else is decided from the finished answer (see withActions): a complete factual answer
   // gets none.
+  // "Did he use Claude Code?" and "Are you lying?" both point to him: buttons too.
+  const truthChallenge = router.isTruthChallenge(question);
+  const rulesChallenge = router.isRulesChallenge(question);
   const plannedActions =
     contactActionsFor(question) ??
     (plan.query ? contactActionsFor(plan.query) : undefined) ??
-    (hiring ? CONTACT_ACTIONS : undefined);
+    (hiring || aiTools || truthChallenge ? CONTACT_ACTIONS : undefined);
 
   // 9. LLM path: the remaining 0.75 of the message + the global daily cap (one round trip).
   const llmAdmitStarted = performance.now();
@@ -391,14 +396,16 @@ async function handleChat(request: Request): Promise<Response> {
   //     pick the one that fits the question, and a short reminder follows the visitor's
   //     message (see HIRING_REMINDER).
   //     The chunk about this assistant is added only when the message may be about it.
+  //     Not for AI-tool questions: its stack is not the answer to them (prompt rule 3).
   const aboutAssistant =
-    plan.intent === "assistant" ||
-    router.mentionsAssistant(question) ||
-    (!!plan.query && router.mentionsAssistant(plan.query));
+    !aiTools &&
+    (plan.intent === "assistant" ||
+      router.mentionsAssistant(question) ||
+      (!!plan.query && router.mentionsAssistant(plan.query)));
   const contactAsked =
     asksForContactDetails(question) || (!!plan.query && asksForContactDetails(plan.query));
   const context = rag.withPinnedChunks(results, {
-    evidence: hiring || !!plannedActions,
+    evidence: hiring || (!!plannedActions && !aiTools && !truthChallenge && !rulesChallenge),
     assistant: aboutAssistant,
     // His contact details only when the visitor asks how to reach him.
     contact: contactAsked,
@@ -421,6 +428,9 @@ async function handleChat(request: Request): Promise<Response> {
     // the interview" counts as asking for contact, and their buttons carry the details.
     ...(contactAsked && !hiring ? { contactDetails: contactLinesAsked(question) } : {}),
     identity: router.isIdentityQuestion(question),
+    aiTools,
+    truthChallenge,
+    rulesChallenge,
   };
   const modelMessages = buildModelMessages(conversation, context, promptNotes);
   const encoder = new TextEncoder();
@@ -544,7 +554,12 @@ async function handleChat(request: Request): Promise<Response> {
           }
           if (queryVector) {
             const storeStarted = performance.now();
-            await cache.storeAnswer(rag.KNOWLEDGE_HASH, question, queryVector, final.text);
+            await cache.storeAnswer(
+              cache.answerCacheKey(rag.KNOWLEDGE_HASH),
+              question,
+              queryVector,
+              final.text,
+            );
             timings.store = ms(storeStarted);
           }
         }

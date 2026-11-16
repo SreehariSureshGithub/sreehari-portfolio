@@ -48,6 +48,8 @@ type Case = {
   must_not_include: string[];
   /** The answer may have at most this many words (the prompt asks for about 60). */
   max_words?: number;
+  /** The answer may have at most this many sentences. */
+  max_sentences?: number;
   /**
    * A simple factual question with a complete answer in the knowledge: the answer must have
    * no contact sentence and no contact buttons.
@@ -162,6 +164,7 @@ const isCantChangeReply = (t: string) => {
   );
 };
 const wordCount = (t: string) => t.split(/\s+/).filter(Boolean).length;
+const sentenceCount = (t: string) => t.split(/[.!?]+(?:\s+|$)/).filter((s) => s.trim()).length;
 
 const isOffTopicReply = (t: string) => t.includes(CHAT_TEXT.offTopic);
 // Models write typographic apostrophes ("don’t"); the patterns use the plain one.
@@ -367,6 +370,9 @@ function score(c: Case, r: Reply, log: ServerLog | undefined): Result {
 
   if (c.max_words && wordCount(a) > c.max_words) {
     problems.push(`${wordCount(a)} words (limit ${c.max_words})`);
+  }
+  if (c.max_sentences && sentenceCount(a) > c.max_sentences) {
+    problems.push(`${sentenceCount(a)} sentences (limit ${c.max_sentences})`);
   }
 
   for (const k of c.must_not_start_with ?? []) {
