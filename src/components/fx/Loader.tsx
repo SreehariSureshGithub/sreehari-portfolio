@@ -1,13 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { setLoaderCovering } from "@/lib/loader-signal";
 
 /**
  * Splash screen. While it covers the page it blocks clicks, so a blind click can't land on
- * hidden content; it lets clicks through as soon as it starts fading out. The chat button
- * and the chat window sit above it (z-[110] / z-[120]), so they work even during the splash.
+ * hidden content; it lets clicks through as soon as it starts fading out. It publishes the
+ * "covering" signal (src/lib/loader-signal.ts) so the chat button waits until the fade starts.
  */
 export function Loader() {
   const [phase, setPhase] = useState<"show" | "fade" | "gone">("show");
+
+  // Layout effect: registered before any passive effect (e.g. the chat button's hydration
+  // check) runs, so the button never gets a frame on top of the splash.
+  useLayoutEffect(() => {
+    setLoaderCovering(phase === "show");
+  }, [phase]);
+  useLayoutEffect(() => () => setLoaderCovering(false), []);
 
   useEffect(() => {
     const fade = setTimeout(() => setPhase("fade"), 1200);
