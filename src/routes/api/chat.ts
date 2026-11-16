@@ -294,7 +294,9 @@ async function handleChat(request: Request): Promise<Response> {
   //    router call decides the intent and rewrites the message as a standalone query; if it
   //    fails, times out or its daily cap is reached, the embedding gate decides as before.
   let routed: RouterResult | undefined;
-  if (router.needsRouter({ firstTurn, question, relevance })) {
+  // "Did he use Claude?" (and a follow-up "What about chatgpt"): fixed meaning, no router.
+  const aiTools = router.isAiToolTurn(parsed.messages);
+  if (!aiTools && router.needsRouter({ firstTurn, question, relevance })) {
     const routerStarted = performance.now();
     if (!LIMITS.routerEnabled) routed = { ok: false, reason: "disabled" };
     else if (!(await rl.admitRouterCall())) routed = { ok: false, reason: "capped" };
@@ -372,8 +374,8 @@ async function handleChat(request: Request): Promise<Response> {
   // else is decided from the finished answer (see withActions): a complete factual answer
   // gets none.
   // "Did he use Claude Code?" and "Are you lying?" both point to him: buttons too.
-  const aiTools = router.isAiToolQuestion(question);
   const truthChallenge = router.isTruthChallenge(question);
+  const rulesChallenge = router.isRulesChallenge(question);
   const plannedActions =
     contactActionsFor(question) ??
     (plan.query ? contactActionsFor(plan.query) : undefined) ??
@@ -403,7 +405,7 @@ async function handleChat(request: Request): Promise<Response> {
   const contactAsked =
     asksForContactDetails(question) || (!!plan.query && asksForContactDetails(plan.query));
   const context = rag.withPinnedChunks(results, {
-    evidence: hiring || (!!plannedActions && !aiTools && !truthChallenge),
+    evidence: hiring || (!!plannedActions && !aiTools && !truthChallenge && !rulesChallenge),
     assistant: aboutAssistant,
     // His contact details only when the visitor asks how to reach him.
     contact: contactAsked,
@@ -428,6 +430,7 @@ async function handleChat(request: Request): Promise<Response> {
     identity: router.isIdentityQuestion(question),
     aiTools,
     truthChallenge,
+    rulesChallenge,
   };
   const modelMessages = buildModelMessages(conversation, context, promptNotes);
   const encoder = new TextEncoder();

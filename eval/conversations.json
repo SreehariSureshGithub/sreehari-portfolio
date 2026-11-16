@@ -345,6 +345,90 @@
           "max_words": 70
         }
       ]
+    },
+    {
+      "id": "ai-tools-thread",
+      "_note": "Added 2026-11-16: every turn says it has no information on AI tools and suggests contacting him; turn 1 may describe the RAG stack.",
+      "turns": [
+        {
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "max_words": 60,
+          "expect_actions": true,
+          "question": "How did he create you? Did he use any AI tools like chatgpt or claude",
+          "must_not_include": [
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself",
+            "did not use",
+            "didn't use",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor"
+          ]
+        },
+        {
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "max_words": 40,
+          "expect_actions": true,
+          "question": "But did he use Claude?",
+          "must_not_include": [
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself",
+            "did not use",
+            "didn't use",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Groq",
+            "gpt-oss",
+            "RAG"
+          ]
+        },
+        {
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "max_words": 40,
+          "expect_actions": true,
+          "question": "What about chatgpt",
+          "must_not_include": [
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself",
+            "did not use",
+            "didn't use",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Groq",
+            "gpt-oss",
+            "RAG"
+          ]
+        }
+      ]
     }
   ]
 }

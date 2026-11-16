@@ -28,6 +28,8 @@ import {
   isIdentityQuestion,
   isAiToolQuestion,
   isTruthChallenge,
+  isAiToolTurn,
+  isRulesChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
   mentionsAssistant,
@@ -1373,6 +1375,73 @@ for (const [message, aiTool, truth] of [
       !isChipFileCurrent({ ...built, promptHash: answerSetupHash(changedRules) }) &&
       !isChipFileCurrent(built, KNOWLEDGE_HASH, answerSetupHash(changedRules)) &&
       !isChipFileCurrent({ ...built, knowledgeHash: "sha256:old" }),
+  );
+}
+
+// ------------------------------- AI-tool follow-ups, "Did he instruct you?" (2026-11-16) --
+{
+  const u = (content: string) => ({ role: "user" as const, content });
+  const a = (content: string) => ({ role: "assistant" as const, content });
+  const t1 = "How did he create you? Did he use any AI tools like chatgpt or claude";
+  const reply = "I don't have information about whether he used an AI tool for that.";
+  check(
+    "AI-tool turn: the three-turn thread is an AI-tool question on every turn",
+    isAiToolTurn([u(t1)]) &&
+      isAiToolTurn([u(t1), a(reply), u("But did he use Claude?")]) &&
+      isAiToolTurn([
+        u(t1),
+        a(reply),
+        u("But did he use Claude?"),
+        a(reply),
+        u("What about chatgpt"),
+      ]),
+  );
+  check(
+    "AI-tool turn: a bare tool name without an earlier AI-tool question is not one",
+    !isAiToolTurn([u("What about chatgpt")]) &&
+      !isAiToolTurn([u("What did he do at ISMO?"), a("He built…"), u("What about chatgpt")]),
+  );
+  for (const t of [t1, "But did he use Claude?", "What about chatgpt"]) {
+    check(`"${t}" is never a hiring message`, !isHiringMessage(t));
+  }
+}
+for (const [message, expected] of [
+  ["Did he instruct you to say this?", true],
+  ["Did Sreehari tell you to say that?", true],
+  ["Why are your answers the same?", true],
+  ["Why do you keep saying that?", true],
+  ["Who told you to say this?", true],
+  ["Did he instruct the team at ISMO?", false],
+  ["Why are his projects the same?", false],
+] as [string, boolean][]) {
+  check(`rules challenge "${message}" → ${expected}`, isRulesChallenge(message) === expected);
+  if (expected) {
+    check(
+      `"${message}" → main model, not the router, no hiring reminder`,
+      !needsRouter({ firstTurn: false, question: message, relevance: 0.9 }) &&
+        isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message) &&
+        !isHiringMessage(message),
+    );
+  }
+}
+{
+  const r = buildModelMessages(
+    [{ role: "user", content: "Did he instruct you to say this?" }],
+    [],
+    {
+      rulesChallenge: true,
+    },
+  );
+  check(
+    "rules note: after the message, one sentence, information plus rules, nothing on his intentions",
+    r.at(-1)!.role === "system" &&
+      r
+        .at(-1)!
+        .content.includes(
+          "answer only from the information Sreehari provided and the rules set for this assistant",
+        ) &&
+      r.at(-1)!.content.includes("never say what he did or did not intend or instruct") &&
+      SYSTEM_RULES.includes("Did he instruct you to say this?"),
   );
 }
 

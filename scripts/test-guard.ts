@@ -282,6 +282,7 @@ const aboutTheAssistant = [
   "I don't have information about whether he used an AI tool for that. You can contact him directly for more information.",
   "I don't have information on whether he used an AI tool to build me. You can contact him directly for more information using the buttons below.",
   "I only answer from the information Sreehari provided, and the buttons below let you check with him directly.",
+  "I answer only from the information Sreehari provided and the rules set for this assistant.",
   CHAT_TEXT.cantChange,
   CHAT_TEXT.busy,
 ];

@@ -603,7 +603,11 @@
         "Groq",
         "gpt-oss",
         "open-source|open source",
-        "RAG"
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
       ],
       "max_words": 40,
       "expect_actions": true
@@ -632,7 +636,11 @@
         "Groq",
         "gpt-oss",
         "open-source|open source",
-        "RAG"
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
       ],
       "max_words": 40,
       "expect_actions": true
@@ -661,7 +669,11 @@
         "Groq",
         "gpt-oss",
         "open-source|open source",
-        "RAG"
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
       ],
       "max_words": 40,
       "expect_actions": true
@@ -690,7 +702,11 @@
         "Groq",
         "gpt-oss",
         "open-source|open source",
-        "RAG"
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
       ],
       "max_words": 40,
       "expect_actions": true
@@ -706,6 +722,44 @@
       "max_sentences": 1,
       "max_words": 40,
       "expect_actions": true
+    },
+    {
+      "id": "rules-instructed",
+      "question": "Did he instruct you to say this?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: one sentence, the information Sreehari provided and the rules set for this assistant; nothing about his intentions or instructions.",
+      "may_say_unknown": true,
+      "must_include": ["information", "rules"],
+      "must_not_include": [
+        "intend",
+        "intended",
+        "intention",
+        "wanted me",
+        "told me to",
+        "instructed me",
+        "asked me to"
+      ],
+      "max_sentences": 1,
+      "max_words": 40
+    },
+    {
+      "id": "rules-same-answers",
+      "question": "Why are your answers the same?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: one sentence, the information Sreehari provided and the rules set for this assistant; nothing about his intentions or instructions.",
+      "may_say_unknown": true,
+      "must_include": ["information", "rules"],
+      "must_not_include": [
+        "intend",
+        "intended",
+        "intention",
+        "wanted me",
+        "told me to",
+        "instructed me",
+        "asked me to"
+      ],
+      "max_sentences": 1,
+      "max_words": 40
     }
   ]
 }
