@@ -1,5 +1,5 @@
 import { Github, Linkedin, Mail } from "lucide-react";
-import { EMAIL, GITHUB, LINKEDIN } from "@/data/portfolio";
+import { EMAIL, GITHUB, LINKEDIN, ROLES } from "@/data/portfolio";
 
 export function Footer() {
   return (
@@ -7,9 +7,7 @@ export function Footer() {
       <div className="mx-auto flex max-w-6xl flex-col items-center gap-6 px-5 text-center">
         <div>
           <p className="font-display text-lg font-bold text-foreground">Sreehari Suresh</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            AI Engineer · Computer Vision Specialist
-          </p>
+          <p className="mt-1 text-sm text-muted-foreground">{ROLES.join(" · ")}</p>
         </div>
 
         <div className="flex gap-3">

@@ -12,13 +12,8 @@ export function Education() {
         <div className="mt-12 grid gap-6 md:grid-cols-2">
           {EDUCATION.map((e, i) => (
             <Reveal key={e.degree} delay={i * 0.08}>
-              <div className="glass glow-border h-full p-7 transition-transform duration-300 hover:-translate-y-1.5">
-                <span
-                  className="grid h-11 w-11 place-items-center rounded-xl text-primary-foreground"
-                  style={{ background: "var(--gradient-brand)" }}
-                >
-                  <GraduationCap className="h-5 w-5" />
-                </span>
+              <div className="glass glow-border h-full p-7">
+                <GraduationCap aria-hidden="true" className="h-6 w-6 text-primary" />
                 <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
                   {e.period}
                 </p>
