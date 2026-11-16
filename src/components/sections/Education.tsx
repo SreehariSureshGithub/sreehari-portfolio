@@ -1,0 +1,58 @@
+import { Award, GraduationCap, ExternalLink } from "lucide-react";
+import { Reveal } from "@/components/ui-kit/Reveal";
+import { SectionHeading } from "@/components/ui-kit/SectionHeading";
+import { CERTIFICATIONS, EDUCATION } from "@/data/portfolio";
+
+export function Education() {
+  return (
+    <section id="education" className="relative py-16 md:py-20 lg:py-28">
+      <div className="mx-auto max-w-6xl px-5">
+        <SectionHeading
+          eyebrow="EDUCATION & CERTIFICATIONS"
+          title="Foundations and continued learning"
+        />
+
+        <div className="mt-16 grid gap-6 md:grid-cols-2">
+          {EDUCATION.map((e, i) => (
+            <Reveal key={e.degree} delay={i * 0.08}>
+              <div className="glass glow-border h-full p-7 transition-transform duration-300 hover:-translate-y-1.5">
+                <span
+                  className="grid h-11 w-11 place-items-center rounded-xl text-primary-foreground"
+                  style={{ background: "var(--gradient-brand)" }}
+                >
+                  <GraduationCap className="h-5 w-5" />
+                </span>
+                <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-primary">
+                  {e.period}
+                </p>
+                <h3 className="mt-2 font-display text-lg font-semibold">{e.degree}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  <a
+                    href={e.website}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 transition-colors hover:text-primary hover:underline"
+                  >
+                    {e.school}
+                    <ExternalLink className="h-3 w-3" />
+                  </a>
+                </p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {CERTIFICATIONS.map((c, i) => (
+            <Reveal key={c} delay={i * 0.05}>
+              <div className="glass flex h-full items-center gap-3 p-5 transition-colors duration-300 hover:text-primary">
+                <Award className="h-4.5 w-4.5 shrink-0 text-accent" />
+                <p className="text-sm">{c}</p>
+              </div>
+            </Reveal>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}

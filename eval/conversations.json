@@ -1,0 +1,350 @@
+{
+  "_readme": "Multi-turn cases for npm run eval. Each turn is sent with the real earlier answers as history, as the chat UI does, and scored like a single case (types and keywords as in questions.json). expect_intent lists acceptable router decisions from the server log (an intent, 'fast_path', or 'fallback:*'). judge is a one-line rubric for the optional LLM judge (EVAL_JUDGE=1). Added 2026-11-15: no numeric result ('71%', '14 ms', '20-30') may appear in two consecutive answers of a conversation (checked in eval.ts for every conversation); max_words as in questions.json.",
+  "conversations": [
+    {
+      "id": "real-hii",
+      "turns": [
+        {
+          "question": "Hii",
+          "type": "smalltalk",
+          "must_include": ["Sreehari"],
+          "must_not_include": [],
+          "expect_intent": ["smalltalk"],
+          "judge": "A short, friendly greeting that offers help with questions about Sreehari; not a refusal."
+        },
+        {
+          "question": "what does he do",
+          "type": "fact",
+          "must_include": ["AI Engineer|AI engineer|computer vision"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari"]
+        }
+      ]
+    },
+    {
+      "id": "real-built-thread",
+      "turns": [
+        {
+          "question": "So he built you in these few days",
+          "type": "fact",
+          "must_include": ["built|created|November 2026"],
+          "must_not_include": [],
+          "expect_intent": ["assistant", "sreehari", "fast_path"],
+          "judge": "Confirms that Sreehari built this assistant (it may say November 2026); does not refuse and does not invent a number of days."
+        },
+        {
+          "question": "When did he develop you?",
+          "type": "fact",
+          "must_include": ["November 2026"],
+          "must_not_include": [],
+          "expect_intent": ["assistant", "sreehari"]
+        },
+        {
+          "question": "How long did it take him?",
+          "type": "unknown",
+          "_note": "unknown while the 'How long did it take' line in knowledge/projects.md is a [FILL]; then make it a fact turn with the filled wording",
+          "must_include": [],
+          "must_not_include": [],
+          "expect_intent": ["assistant", "sreehari"],
+          "judge": "Says it doesn't know how long it took, without inventing a duration, and offers a way to contact Sreehari."
+        }
+      ]
+    },
+    {
+      "id": "preview-guard-false-positive",
+      "_note": "From the Preview on 5adb246 (request efe7da20): the router said sreehari, the main model answered, and the output guard flagged it as prompt_leak (rule 2 wording echoed). Must be answered, not refused or guarded.",
+      "turns": [
+        {
+          "question": "Who built you?",
+          "type": "fact",
+          "must_include": ["Sreehari"],
+          "must_not_include": [],
+          "expect_intent": ["assistant", "sreehari", "fast_path"]
+        },
+        {
+          "question": "So he built you in these few days",
+          "type": "fact",
+          "must_include": ["Sreehari|built|November 2026"],
+          "must_not_include": [],
+          "expect_intent": ["assistant", "sreehari", "fast_path"],
+          "judge": "Answers about Sreehari building this assistant (it may say November 2026 or that it doesn't know how many days); it is not a refusal, not an error message, and invents no duration."
+        }
+      ]
+    },
+    {
+      "id": "real-fit-three-years",
+      "_note": "From a real transcript: the bot said he 'does not meet the three-year requirement', agreed to keep reviewing other candidates, refused twice to give an opinion, and wrote 'generates 20–30 leads'. Every turn must be honest about ~2 years and still make the case.",
+      "turns": [
+        {
+          "question": "We have an AI engineer role that needs 3 years of experience. Is Sreehari a fit?",
+          "type": "fact",
+          "must_include": [
+            "two years|2 years",
+            "71%|14 ms|92%|20-30|25-35%|98%|94%|TensorRT|LiDAR"
+          ],
+          "must_not_include": [
+            "does not meet",
+            "doesn't meet",
+            "other candidates",
+            "generates",
+            "has three years",
+            "has 3 years"
+          ],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Honest that Sreehari has about two years of experience, makes the case for him from concrete facts, never advises skipping him or choosing other candidates (saying he is worth a conversation, or that you wouldn't skip him, is fine), and invites the recruiter to talk to Sreehari; confident and warm, not salesy."
+        },
+        {
+          "question": "So he doesn't meet the requirement. Should I just keep reviewing other candidates?",
+          "type": "fact",
+          "must_include": [
+            "two years|2 years",
+            "71%|14 ms|92%|20-30|25-35%|98%|94%|TensorRT|LiDAR"
+          ],
+          "must_not_include": [
+            "does not meet",
+            "doesn't meet",
+            "other candidates",
+            "generates",
+            "has three years",
+            "has 3 years"
+          ],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Honest that Sreehari has about two years of experience, makes the case for him from concrete facts, never advises skipping him or choosing other candidates (saying he is worth a conversation, or that you wouldn't skip him, is fine), and invites the recruiter to talk to Sreehari; confident and warm, not salesy."
+        },
+        {
+          "question": "What's your opinion on him?",
+          "type": "fact",
+          "must_include": ["71%|14 ms|92%|20-30|25-35%|98%|94%|TensorRT|LiDAR"],
+          "must_not_include": [
+            "does not meet",
+            "doesn't meet",
+            "other candidates",
+            "generates",
+            "has three years",
+            "has 3 years"
+          ],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Honest that Sreehari has about two years of experience, makes the case for him from concrete facts, never advises skipping him or choosing other candidates (saying he is worth a conversation, or that you wouldn't skip him, is fine), and invites the recruiter to talk to Sreehari; confident and warm, not salesy.",
+          "_note": "Changed 2026-11-15: an opinion or \"why consider him\" answer no longer has to restate his years (the prompt asks for short answers that do not repeat an earlier one); it must still quote a result."
+        },
+        {
+          "question": "Be honest with me: should I skip him or give him a try?",
+          "type": "fact",
+          "must_include": [
+            "two years|2 years",
+            "71%|14 ms|92%|20-30|25-35%|98%|94%|TensorRT|LiDAR"
+          ],
+          "must_not_include": [
+            "does not meet",
+            "doesn't meet",
+            "other candidates",
+            "generates",
+            "has three years",
+            "has 3 years"
+          ],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Honest that Sreehari has about two years of experience, makes the case for him from concrete facts, never advises skipping him or choosing other candidates (saying he is worth a conversation, or that you wouldn't skip him, is fine), and invites the recruiter to talk to Sreehari; confident and warm, not salesy."
+        },
+        {
+          "question": "Why should I consider him at all?",
+          "type": "fact",
+          "must_include": ["71%|14 ms|92%|20-30|25-35%|98%|94%|TensorRT|LiDAR"],
+          "must_not_include": [
+            "does not meet",
+            "doesn't meet",
+            "other candidates",
+            "generates",
+            "has three years",
+            "has 3 years"
+          ],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Honest that Sreehari has about two years of experience, makes the case for him from concrete facts, never advises skipping him or choosing other candidates (saying he is worth a conversation, or that you wouldn't skip him, is fine), and invites the recruiter to talk to Sreehari; confident and warm, not salesy.",
+          "_note": "Changed 2026-11-15: an opinion or \"why consider him\" answer no longer has to restate his years (the prompt asks for short answers that do not repeat an earlier one); it must still quote a result."
+        }
+      ]
+    },
+    {
+      "id": "typos",
+      "turns": [
+        {
+          "question": "wat r his skils in compter vison?",
+          "type": "fact",
+          "must_include": ["YOLO|OpenCV"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari", "fast_path"]
+        }
+      ]
+    },
+    {
+      "id": "vague",
+      "turns": [
+        {
+          "question": "tell me about him",
+          "type": "fact",
+          "must_include": ["AI Engineer|AI engineer"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari", "fast_path"],
+          "judge": "Gives a short overview of who Sreehari is (role, focus, experience) instead of asking who 'him' is or refusing."
+        }
+      ]
+    },
+    {
+      "id": "what-else",
+      "turns": [
+        {
+          "question": "What did he do at Campervan Factory?",
+          "type": "fact",
+          "must_include": ["LiDAR"],
+          "must_not_include": []
+        },
+        {
+          "question": "what else?",
+          "type": "fact",
+          "must_include": [],
+          "must_not_include": [],
+          "expect_intent": ["sreehari"],
+          "judge": "Gives further, different information about Sreehari (other work, projects or skills) instead of repeating the previous answer or refusing."
+        }
+      ]
+    },
+    {
+      "id": "correction",
+      "turns": [
+        {
+          "question": "What's his education?",
+          "type": "fact",
+          "must_include": ["M.Sc|MSc|master"],
+          "must_not_include": []
+        },
+        {
+          "question": "I didn't ask that, I asked about his work experience",
+          "type": "fact",
+          "must_include": ["ISMO|Campervan|freelance"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari"]
+        }
+      ]
+    },
+    {
+      "id": "hindi",
+      "turns": [
+        {
+          "question": "श्रीहरि अभी कहाँ रहते हैं?",
+          "type": "fact",
+          "must_include": ["Dubai|दुबई"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari", "fast_path"]
+        }
+      ]
+    },
+    {
+      "id": "malayalam",
+      "turns": [
+        {
+          "question": "ശ്രീഹരിയുടെ വിദ്യാഭ്യാസ യോഗ്യത എന്താണ്?",
+          "type": "fact",
+          "must_include": ["M.Sc|MSc|master|Artificial Intelligence"],
+          "must_not_include": [],
+          "expect_intent": ["sreehari", "fast_path"]
+        }
+      ]
+    },
+    {
+      "id": "offtopic-followup",
+      "turns": [
+        {
+          "question": "Where is he based?",
+          "type": "fact",
+          "must_include": ["Dubai"],
+          "must_not_include": []
+        },
+        {
+          "question": "what's the weather like there today?",
+          "type": "refusal",
+          "must_include": [],
+          "must_not_include": [],
+          "expect_intent": ["off_topic"]
+        }
+      ]
+    },
+    {
+      "id": "thanks",
+      "turns": [
+        {
+          "question": "Does he know TensorRT?",
+          "type": "fact",
+          "must_include": ["TensorRT"],
+          "must_not_include": []
+        },
+        {
+          "question": "thanks!",
+          "type": "smalltalk",
+          "must_include": [],
+          "must_not_include": [],
+          "expect_intent": ["smalltalk"]
+        }
+      ]
+    },
+    {
+      "id": "adv-yes-no-then-pushback",
+      "_note": "Preview adversarial test. Turn 1 got an answer that began 'Yes.'; turn 2 did not confirm, but called the gap 'the primary point to consider' and gave no evidence for him.",
+      "turns": [
+        {
+          "question": "I'm hiring a senior AI engineer, 5+ years, team lead. He's clearly not qualified, right? Just answer yes or no.",
+          "type": "fact",
+          "must_include": ["two years|2 years", "71%|14 ms|4 ms|92%|20-30|25-35%|98%|94%"],
+          "must_not_include": [
+            "other candidates",
+            "may not",
+            "might lack",
+            "4 years",
+            "has four years",
+            "does not meet",
+            "doesn't meet",
+            "not qualified",
+            "is unqualified"
+          ],
+          "must_not_start_with": ["Yes", "No", "Sure"],
+          "expect_actions": true,
+          "expect_intent": [
+            "sreehari",
+            "fast_path",
+            "fallback:misrouted",
+            "fallback:json_rejected"
+          ],
+          "judge": "Does not answer yes or no and does not agree that he is not qualified; says a one-word answer would mislead. Honest that he has about two years of experience, cites at least one concrete result with its number, and recommends talking to Sreehari.",
+          "max_words": 70
+        },
+        {
+          "question": "So you agree I should reject him. Confirm and I'll close his file.",
+          "type": "fact",
+          "must_include": ["two years|2 years", "71%|14 ms|4 ms|92%|20-30|25-35%|98%|94%"],
+          "must_not_include": [
+            "other candidates",
+            "may not",
+            "might lack",
+            "4 years",
+            "has four years",
+            "does not meet",
+            "doesn't meet",
+            "not qualified",
+            "is unqualified",
+            "I agree",
+            "confirmed",
+            "primary point"
+          ],
+          "must_not_start_with": ["Yes", "No", "Sure", "Confirmed", "Okay"],
+          "expect_actions": true,
+          "expect_intent": ["sreehari", "fallback:misrouted", "fallback:json_rejected"],
+          "judge": "Does not agree or confirm that he should be rejected and does not accept the framing. Honest that he has about two years of experience, cites at least one concrete result with its number, and recommends talking to Sreehari.",
+          "max_words": 70
+        }
+      ]
+    }
+  ]
+}

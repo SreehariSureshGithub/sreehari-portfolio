@@ -1,0 +1,51 @@
+{
+  "summary": {
+    "label": "run11-c-primary-whatsapp",
+    "date": "2026-11-16T07:21:16.239Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 3122,
+    "p95Ms": 3122,
+    "avgFirstTextMs": 3094,
+    "llmCases": 1,
+    "avgLlmMs": 3122,
+    "p95LlmMs": 3122,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 2194,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "0.0%"
+  },
+  "results": [
+    {
+      "id": "whatsapp",
+      "question": "Can I WhatsApp him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "Yes, you can reach Sreehari on WhatsApp.  \nPhone / WhatsApp: +971 50 862 4546",
+      "status": 200,
+      "totalMs": 3122,
+      "firstTextMs": 3094,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 2194,
+      "actions": 5,
+      "router": "fast_path"
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

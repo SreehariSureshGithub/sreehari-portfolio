@@ -1,0 +1,51 @@
+{
+  "summary": {
+    "label": "run12-c-whatsapp",
+    "date": "2026-11-16T07:57:02.560Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 1755,
+    "p95Ms": 1755,
+    "avgFirstTextMs": 1726,
+    "llmCases": 1,
+    "avgLlmMs": 1755,
+    "p95LlmMs": 1755,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 2070,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "0.0%"
+  },
+  "results": [
+    {
+      "id": "whatsapp",
+      "question": "Can I WhatsApp him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "Sure!  \nPhone / WhatsApp: +971 50 862 4546",
+      "status": 200,
+      "totalMs": 1755,
+      "firstTextMs": 1726,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 2070,
+      "actions": 5,
+      "router": "fast_path"
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

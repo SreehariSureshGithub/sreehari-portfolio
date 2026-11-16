@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "label": "run11-d-fallback-boss",
+    "date": "2026-11-16T07:22:38.588Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 1592,
+    "p95Ms": 1592,
+    "avgFirstTextMs": 1592,
+    "llmCases": 1,
+    "avgLlmMs": 1592,
+    "p95LlmMs": 1592,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 1968,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "0.0%"
+  },
+  "results": [
+    {
+      "id": "who-is-your-boss",
+      "question": "Who is your boss?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "My boss is Sreehari Suresh.",
+      "status": 200,
+      "totalMs": 1592,
+      "firstTextMs": 1592,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 1968,
+      "router": "fast_path"
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

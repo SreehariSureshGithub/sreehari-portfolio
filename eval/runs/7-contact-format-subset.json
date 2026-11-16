@@ -1,0 +1,122 @@
+{
+  "summary": {
+    "label": "7-contact-format-subset",
+    "date": "2026-11-12T06:35:46.646Z",
+    "cases": 5,
+    "passed": 5,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "4/4",
+      "unknown": "0/0",
+      "refusal": "1/1"
+    },
+    "refusalPrecision": "100.0%",
+    "refusalRecall": "100.0%",
+    "avgMs": 2708,
+    "p95Ms": 3965,
+    "avgFirstTextMs": 2685,
+    "llmCases": 4,
+    "avgLlmMs": 3089,
+    "p95LlmMs": 3965,
+    "fallbackRate": "100.0%",
+    "truncated": 0,
+    "avgTokens": 1049,
+    "chipsPassed": "0/1"
+  },
+  "results": [
+    {
+      "id": "contact",
+      "question": "How can a recruiter reach him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "A recruiter can reach Sreehari Suresh by:\n\nEmail: sreehari.official0606@gmail.com  \nPhone / WhatsApp: +971 50 862 4546  \nLinkedIn: linkedin.com/in/sreeharisureshofficial",
+      "status": 200,
+      "totalMs": 2930,
+      "firstTextMs": 2818,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 1067,
+      "actions": 5
+    },
+    {
+      "id": "phone",
+      "question": "What's his phone number?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "Phone / WhatsApp: +971 50 862 4546",
+      "status": 200,
+      "totalMs": 3965,
+      "firstTextMs": 3964,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 1014,
+      "actions": 5
+    },
+    {
+      "id": "whatsapp",
+      "question": "Can I WhatsApp him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "Phone / WhatsApp: +971 50 862 4546",
+      "status": 200,
+      "totalMs": 3028,
+      "firstTextMs": 3027,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 1104,
+      "actions": 5
+    },
+    {
+      "id": "email-only",
+      "question": "What's his email address?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "Email: sreehari.official0606@gmail.com",
+      "status": 200,
+      "totalMs": 2431,
+      "firstTextMs": 2430,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 1011,
+      "actions": 5
+    },
+    {
+      "id": "offtopic-joke",
+      "question": "Tell me a joke.",
+      "type": "refusal",
+      "pass": true,
+      "problems": [],
+      "answer": "I can only answer questions about Sreehari — his experience, projects, skills or how to reach him. What would you like to know?",
+      "status": 200,
+      "totalMs": 1187,
+      "firstTextMs": 1187,
+      "outcome": "refused"
+    }
+  ],
+  "chips": [
+    {
+      "id": "chip-contact",
+      "question": "How can I contact him?",
+      "type": "fact",
+      "pass": false,
+      "problems": [],
+      "answer": "You can reach Sreehari Suresh through the following channels:\n\nEmail: sreehari.official0606@gmail.com  \nPhone / WhatsApp: +971 50 862 4546  \nLinkedIn: linkedin.com/in/sreeharisureshofficial",
+      "status": 200,
+      "totalMs": 2137,
+      "firstTextMs": 2134,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 1053,
+      "actions": 5
+    }
+  ]
+}

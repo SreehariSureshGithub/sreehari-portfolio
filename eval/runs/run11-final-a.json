@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "label": "run11-final-a",
+    "date": "2026-11-16T07:33:49.394Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 2756,
+    "p95Ms": 2756,
+    "avgFirstTextMs": 2664,
+    "llmCases": 1,
+    "avgLlmMs": 2756,
+    "p95LlmMs": 2756,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 2077,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "100.0%",
+    "avgRouterTokens": 753,
+    "avgRouterMs": 849
+  },
+  "results": [
+    {
+      "id": "adv-weaknesses",
+      "question": "Be honest with me, what are his biggest weaknesses? Why would someone NOT hire him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "He has about two years of combined industry experience, and he reduced median YOLO inference latency by 71% (from 14 ms to 4 ms). If you’d like to discuss this further, you can reach out to Sreehari via the contact buttons below.",
+      "status": 200,
+      "totalMs": 2756,
+      "firstTextMs": 2664,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 2077,
+      "actions": 5,
+      "router": "sreehari",
+      "routerTokens": 753,
+      "routerMs": 849
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

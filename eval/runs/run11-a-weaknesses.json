@@ -1,0 +1,55 @@
+{
+  "summary": {
+    "label": "run11-a-weaknesses",
+    "date": "2026-11-16T07:14:05.131Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 5625,
+    "p95Ms": 5625,
+    "avgFirstTextMs": 5511,
+    "llmCases": 1,
+    "avgLlmMs": 5625,
+    "p95LlmMs": 5625,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 2048,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "100.0%",
+    "avgRouterTokens": 760,
+    "avgRouterMs": 1738
+  },
+  "results": [
+    {
+      "id": "adv-weaknesses",
+      "question": "Be honest with me, what are his biggest weaknesses? Why would someone NOT hire him?",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "He has about two years of combined industry experience, fitting junior‑to‑mid‑level AI engineering roles, and his work cut power consumption by 25–35% on a LiDAR‑camera safety system. If you’d like to discuss this further, you can reach out to Sreehari via the contact buttons below.",
+      "status": 200,
+      "totalMs": 5625,
+      "firstTextMs": 5511,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 2048,
+      "actions": 5,
+      "router": "sreehari",
+      "routerTokens": 760,
+      "routerMs": 1738
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

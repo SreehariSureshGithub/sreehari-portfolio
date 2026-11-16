@@ -1,0 +1,53 @@
+{
+  "summary": {
+    "label": "run11-b-fallback-contact",
+    "date": "2026-11-16T07:16:41.711Z",
+    "cases": 1,
+    "passed": 0,
+    "accuracy": "0.0%",
+    "byType": {
+      "fact": "0/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 2823,
+    "p95Ms": 2823,
+    "avgFirstTextMs": 2528,
+    "llmCases": 1,
+    "avgLlmMs": 2823,
+    "p95LlmMs": 2823,
+    "fallbackRate": "0.0%",
+    "truncated": 0,
+    "avgTokens": 2169,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "0.0%"
+  },
+  "results": [
+    {
+      "id": "contact",
+      "question": "How can a recruiter reach him?",
+      "type": "fact",
+      "pass": false,
+      "problems": [
+        "contains \"https://\""
+      ],
+      "answer": "A recruiter can reach Sreehari Suresh by email at sreehari.official0606@gmail.com, by phone or WhatsApp on +971 50 862 4546, or via LinkedIn at https://www.linkedin.com/in/sreeharisureshofficial.",
+      "status": 200,
+      "totalMs": 2823,
+      "firstTextMs": 2528,
+      "outcome": "answered",
+      "provider": "groq",
+      "finish": "stop",
+      "tokens": 2169,
+      "actions": 5,
+      "router": "fast_path"
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}
