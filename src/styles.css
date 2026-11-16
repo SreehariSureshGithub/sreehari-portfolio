@@ -5,8 +5,9 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system — dark futuristic AI portfolio.
- * All colors in oklch. Tokens only; never hardcode colors in components.
+ * Design system — warm minimal dark palette.
+ * Palette: #1F1F1F bg, #939084 subtle, #D1CFC0 text, #F76F53 accent.
+ * Tokens only; never hardcode colors in components.
  */
 
 @theme inline {
@@ -36,48 +37,37 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
-  --color-cyan: var(--cyan);
-  --color-violet: var(--violet);
-  --font-display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.13 0.038 275);
-  --foreground: oklch(0.98 0.005 260);
-  --surface: oklch(0.2 0.04 268);
-  --card: oklch(0.2 0.04 268);
-  --card-foreground: oklch(0.98 0.005 260);
-  --popover: oklch(0.18 0.04 270);
-  --popover-foreground: oklch(0.98 0.005 260);
-  --primary: oklch(0.83 0.15 200);
-  --primary-foreground: oklch(0.14 0.04 270);
-  --secondary: oklch(0.25 0.045 270);
-  --secondary-foreground: oklch(0.97 0.005 260);
-  --muted: oklch(0.24 0.04 270);
-  --muted-foreground: oklch(0.72 0.025 260);
-  --accent: oklch(0.55 0.24 292);
-  --accent-foreground: oklch(0.98 0.005 260);
+  --radius: 0.5rem;
+  --background: #1f1f1f;
+  --foreground: #d1cfc0;
+  --surface: #272725;
+  --card: #272725;
+  --card-foreground: #d1cfc0;
+  --popover: #2b2b29;
+  --popover-foreground: #d1cfc0;
+  --primary: #f76f53;
+  --primary-foreground: #1f1f1f;
+  --secondary: #2a2a28;
+  --secondary-foreground: #d1cfc0;
+  --muted: #2a2a28;
+  --muted-foreground: #939084;
+  --accent: #2f2f2c;
+  --accent-foreground: #d1cfc0;
   --destructive: oklch(0.62 0.23 22);
-  --destructive-foreground: oklch(0.98 0.005 260);
-  --border: oklch(0.98 0.005 260 / 10%);
-  --input: oklch(0.98 0.005 260 / 14%);
-  --ring: oklch(0.83 0.15 200);
-  --cyan: oklch(0.83 0.15 200);
-  --violet: oklch(0.55 0.24 292);
+  --destructive-foreground: #d1cfc0;
+  --border: rgb(209 207 192 / 0.1);
+  --input: rgb(209 207 192 / 0.14);
+  --ring: #f76f53;
 
-  --gradient-brand: linear-gradient(115deg, var(--cyan), var(--violet));
-  --gradient-glow: radial-gradient(
-    circle at center,
-    color-mix(in oklab, var(--cyan) 32%, transparent),
-    transparent 70%
-  );
-  --glass-bg: color-mix(in oklab, var(--surface) 55%, transparent);
-  --shadow-glow: 0 0 0 1px color-mix(in oklab, var(--cyan) 22%, transparent),
-    0 24px 60px -24px color-mix(in oklab, var(--cyan) 45%, transparent);
-  --shadow-violet: 0 24px 70px -28px color-mix(in oklab, var(--violet) 60%, transparent);
+  --gradient-brand: linear-gradient(var(--primary), var(--primary));
+  --glass-bg: var(--card);
+  --shadow-glow: 0 0 0 1px var(--border);
 }
 
 @layer base {
@@ -103,11 +93,12 @@
   h3,
   h4 {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--cyan) 35%, transparent);
+    background: color-mix(in oklab, var(--primary) 30%, transparent);
   }
 
   ::-webkit-scrollbar {
@@ -117,7 +108,7 @@
     background: var(--background);
   }
   ::-webkit-scrollbar-thumb {
-    background: color-mix(in oklab, var(--cyan) 30%, transparent);
+    background: rgb(147 144 132 / 0.4);
     border-radius: 999px;
   }
 
@@ -141,63 +132,49 @@
 
 @utility glass {
   background: var(--glass-bg);
-  backdrop-filter: blur(18px) saturate(140%);
   border: 1px solid var(--border);
   border-radius: var(--radius-2xl);
 }
 
 @utility glow-border {
   position: relative;
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    padding: 1px;
-    background: var(--gradient-brand);
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    opacity: 0.35;
-    transition: opacity 0.35s ease;
-    pointer-events: none;
+  border: 1px solid var(--border);
+  transition: border-color 0.35s ease;
+  &:hover {
+    border-color: color-mix(in oklab, var(--primary) 55%, transparent);
   }
-  &:hover::before {
-    opacity: 1;
+}
+
+/* Nav pill: floats above the page; on hover (pointer devices only) it moves slightly toward the viewer. */
+@utility nav-raise {
+  box-shadow:
+    0 8px 24px -12px rgb(0 0 0 / 0.6),
+    0 2px 6px -2px rgb(0 0 0 / 0.4);
+  transform-origin: center;
+  transition:
+    transform 300ms ease-out,
+    box-shadow 300ms ease-out;
+  backface-visibility: hidden;
+  @media (hover: hover) {
+    &:hover {
+      box-shadow:
+        0 14px 32px -12px rgb(0 0 0 / 0.7),
+        0 4px 10px -2px rgb(0 0 0 / 0.45);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: scale(1.01);
+    }
   }
 }
 
 @utility text-gradient {
-  background: var(--gradient-brand);
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
+  color: var(--foreground);
 }
 
 @utility glow-cyan {
   box-shadow: var(--shadow-glow);
-}
-
-@utility grid-lines {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--cyan) 7%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--cyan) 7%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-14px);
-  }
 }
 
 @keyframes pulse-ring {
@@ -209,21 +186,4 @@
     transform: scale(1.6);
     opacity: 0;
   }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@utility animate-float {
-  animation: float-slow 6s ease-in-out infinite;
-}
-
-@utility animate-marquee {
-  animation: marquee 28s linear infinite;
 }

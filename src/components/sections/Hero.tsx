@@ -2,20 +2,12 @@ import { motion } from "motion/react";
 import { Github, Linkedin, Mail, ArrowDown, Download } from "lucide-react";
 import { MagneticButton } from "@/components/ui-kit/MagneticButton";
 import { Typewriter } from "@/components/ui-kit/Typewriter";
-import { Counter } from "@/components/ui-kit/Counter";
-import { NeuralVisual } from "./NeuralVisual";
+import portrait from "@/assets/portrait.jpg";
 import { EMAIL, GITHUB, HERO_STATS, LINKEDIN, RESUME_URL, ROLES } from "@/data/portfolio";
 
 export function Hero() {
   return (
-    <section id="top" className="relative overflow-hidden pb-20 pt-32 md:pt-40">
-      <div aria-hidden="true" className="grid-lines absolute inset-0 -z-10 opacity-40" />
-      <div
-        aria-hidden="true"
-        className="absolute -left-40 top-10 -z-10 h-[420px] w-[420px] rounded-full blur-3xl"
-        style={{ background: "var(--gradient-glow)" }}
-      />
-
+    <section id="top" className="relative overflow-hidden pb-20 pt-[90px] md:pt-[106px]">
       <div className="mx-auto grid max-w-6xl items-center gap-14 px-5 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <motion.div
@@ -24,10 +16,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.1 }}
             className="glass inline-flex items-center gap-2 rounded-full px-4 py-1.5"
           >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-70" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
-            </span>
+            <span className="inline-flex h-2 w-2 rounded-full bg-primary" />
             <span className="font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
               AVAILABLE FOR AI ROLES
             </span>
@@ -42,7 +31,7 @@ export function Hero() {
             <span className="block text-lg font-medium text-muted-foreground sm:text-xl">
               Hi, I&apos;m
             </span>
-            <span className="text-gradient">Sreehari Suresh</span>
+            <span className="text-foreground">Sreehari Suresh</span>
           </motion.h1>
 
           <motion.p
@@ -98,7 +87,7 @@ export function Hero() {
                 target={href.startsWith("http") ? "_blank" : undefined}
                 rel="noreferrer"
                 aria-label={label}
-                className="glass grid h-11 w-11 place-items-center rounded-full text-muted-foreground transition-all duration-300 hover:scale-110 hover:text-primary hover:glow-cyan"
+                className="glass grid h-11 w-11 place-items-center rounded-full text-muted-foreground transition-colors duration-300 hover:text-primary"
               >
                 <Icon className="h-4.5 w-4.5" />
               </a>
@@ -112,25 +101,40 @@ export function Hero() {
           transition={{ duration: 1, delay: 0.3 }}
           className="flex justify-center"
         >
-          <NeuralVisual />
+          <div className="relative mx-auto w-full max-w-[320px] overflow-hidden rounded-[var(--radius-xl)] border border-border bg-card lg:max-w-sm">
+            <img
+              src={portrait}
+              alt="Portrait of Sreehari Suresh, AI Engineer"
+              width={1024}
+              height={1024}
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-background to-transparent p-5">
+              <p className="font-display text-sm font-semibold">Sreehari Suresh</p>
+              <p className="text-xs text-muted-foreground">Dubai, UAE</p>
+            </div>
+          </div>
         </motion.div>
       </div>
 
-      <div className="mx-auto mt-20 grid max-w-6xl grid-cols-2 gap-4 px-5 lg:grid-cols-4">
-        {HERO_STATS.map((s, i) => (
-          <motion.div
-            key={s.label}
-            initial={{ opacity: 0, y: 26 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.7 + i * 0.1 }}
-            className="glass glow-border p-6 text-center"
-          >
-            <p className="font-display text-3xl font-bold text-gradient sm:text-4xl">
-              <Counter value={s.value} suffix={s.suffix} />
-            </p>
-            <p className="mt-2 text-xs text-muted-foreground sm:text-sm">{s.label}</p>
-          </motion.div>
-        ))}
+      <div className="mx-auto mt-20 max-w-6xl px-5">
+        <dl className="grid grid-cols-2 gap-x-6 gap-y-8 lg:grid-cols-4 lg:gap-0 lg:divide-x lg:divide-border">
+          {HERO_STATS.map((s, i) => (
+            <motion.div
+              key={s.label}
+              initial={{ opacity: 0, y: 26 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.7, delay: 0.7 + i * 0.1 }}
+              className="flex flex-col items-center text-center lg:px-8"
+            >
+              <dt className="order-2 mt-1 text-xs text-muted-foreground sm:text-sm">{s.label}</dt>
+              <dd className="order-1 font-display text-3xl font-bold tabular-nums text-foreground sm:text-4xl">
+                {s.value.toLocaleString("en-US")}
+                {s.suffix}
+              </dd>
+            </motion.div>
+          ))}
+        </dl>
       </div>
     </section>
   );

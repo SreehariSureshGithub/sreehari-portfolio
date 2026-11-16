@@ -228,7 +228,7 @@ export function isMisrouted(decision: RouterDecision, latestMessage: string): bo
     "reply" in decision &&
     (isHiringMessage(latestMessage) ||
       isIdentityQuestion(latestMessage) ||
-      isAiToolQuestion(latestMessage) ||
+      hasAiToolWording(latestMessage) ||
       isTruthChallenge(latestMessage) ||
       isRulesChallenge(latestMessage))
   );
@@ -236,16 +236,62 @@ export function isMisrouted(decision: RouterDecision, latestMessage: string): bo
 
 /**
  * Whether he used AI tools or coding assistants to build something ("Did he use Codex or
- * Claude Code to build you?", "Did he write every line himself?"). The knowledge says nothing
- * either way; the primary once answered "He did not use Codex or Claude" (2026-11-16). These
- * get a fixed meaning (prompt rule 3) and the contact buttons. Needs a "use" verb or the
- * every-line wording, so "What AI models did he work with?" is not one.
+ * Claude Code to build you?", "Did he write every line himself?"). Needs a "use" verb or the
+ * every-line wording, so "What AI models did he work with?" is not one. Which subject it is
+ * about is decided separately (aiToolSubject).
  */
-const AI_TOOL_QUESTION =
-  /(?<![\p{L}\p{N}])(?:use[ds]?|using|rel(?:y|ied|ies) on|help(?:ed)? (?:by|from)|with the help of|assisted by|generated (?:by|with)|built with|made with|written (?:by|with)|wrote (?:it )?with)(?: an?| the| any| some)? (?:(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|coding assistants?|ai[- ](?:tools?|assistants?|coding(?: tools?| assistants?)?|help|pair[- ]programm\w*))(?![\p{L}\p{N}])|ai (?:to|for) (?:build|write|code|make|create|develop)\w*)|(?<![\p{L}\p{N}])(?:every|each) line(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])by hand(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])(?:all|every bit) of the code(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])vibe[- ]?cod/iu;
+const AI_TOOL_WORDING =
+  /(?<![\p{L}\p{N}])(?:use[ds]?|using|rel(?:y|ied|ies) on|help(?:ed)? (?:by|from)|with the help of|assisted by|generated (?:by|with)|built with|made with|written (?:by|with)|wrote (?:it )?with)(?: an?| the| any| some)? (?:(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|lovable|coding assistants?|ai[- ](?:tools?|assistants?|coding(?: tools?| assistants?)?|help|pair[- ]programm\w*))(?![\p{L}\p{N}])|ai (?:to|for) (?:build|write|code|make|create|develop|design)\w*|ai (?:for|on|in|with) (?:the |this |that |his |its )?(?:chat ?bots?|assistant|bot|website|web ?site|site|portfolio|front[- ]?end|design|ui|ux|layout|you|it|this|that)(?![\p{L}\p{N}]))|(?<![\p{L}\p{N}])(?:every|each) line(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])by hand(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])(?:all|every bit)(?: of)? the code(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])vibe[- ]?cod/iu;
 
+/** AI-tool wording about any subject: the website, the assistant, or unclear. */
+export function hasAiToolWording(message: string): boolean {
+  return AI_TOOL_WORDING.test(message.replace(/[‘’]/g, "'"));
+}
+
+/** The portfolio website itself: its design, look and front end. */
+const WEBSITE_SUBJECT =
+  /(?<![\p{L}\p{N}])(?:web ?sites?|site|portfolio|design(?:ed|ing|s)?|ui|ux|ui\/ux|user interface|layout|front[- ]?end|styling|style|look|theme|colou?rs?|palette|typography|fonts?|visuals?|animations?)(?![\p{L}\p{N}])/iu;
+
+/** The AI assistant: "you", the chatbot, its RAG system or its code. */
+const ASSISTANT_SUBJECT =
+  /(?<![\p{L}\p{N}])(?:you|your|yours|yourself|u|ur|assistant|chat ?bots?|bot|ai agent|rag|llm|retrieval|back[- ]?end|server|prompt|guardrails?)(?![\p{L}\p{N}])/iu;
+
+/**
+ * What an AI-tool question is about. Anything naming the assistant is about the assistant, even
+ * when it also names the site ("the chatbot on his website"); a message naming only the website
+ * is about the website; a message naming neither ("Did he use AI to build this?", "Did he write
+ * all the code himself?") is unclear and is treated like the assistant.
+ */
+export function aiToolSubject(message: string): "website" | "assistant" | "unclear" {
+  const m = message.replace(/[‘’]/g, "'").replace(/\bai assistant\b/gi, "assistant");
+  if (ASSISTANT_SUBJECT.test(m)) return "assistant";
+  if (WEBSITE_SUBJECT.test(m)) return "website";
+  return "unclear";
+}
+
+/**
+ * An AI-tool question that gets the fixed reply (prompt rule 3) and the contact buttons: about
+ * the assistant, or with no clear subject. The knowledge says nothing about AI tools for the
+ * assistant; the primary once answered "He did not use Codex or Claude" (2026-11-16). AI-tool
+ * questions about the website's design and front end are not these: knowledge/website.md
+ * answers them.
+ */
 export function isAiToolQuestion(message: string): boolean {
-  return AI_TOOL_QUESTION.test(message.replace(/[‘’]/g, "'"));
+  return hasAiToolWording(message) && aiToolSubject(message) !== "website";
+}
+
+/**
+ * The router's standalone rewrite of the latest message is an AI-tool question about the
+ * assistant ("Did Sreehari use AI tools to build his AI assistant?"). Rewrites are keyword-like,
+ * so a tool name without a "use" verb counts too; "AI assistant" itself is the subject, not a
+ * tool. A rewrite about the website, or one with no subject, is not one.
+ */
+const AI_TOOL_IN_QUERY =
+  /(?<![\p{L}\p{N}])(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|lovable|coding assistants?|ai[- ](?:tools?|coding(?: tools?| assistants?)?|generated|pair[- ]programm\w*)|vibe[- ]?cod\w*)(?![\p{L}\p{N}])/iu;
+
+export function isAiToolQuery(query: string): boolean {
+  const q = query.replace(/[‘’]/g, "'");
+  return (hasAiToolWording(q) || AI_TOOL_IN_QUERY.test(q)) && aiToolSubject(q) === "assistant";
 }
 
 /**
@@ -267,19 +313,34 @@ const AI_TOOL_MENTION =
   /(?<![\p{L}\p{N}])(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|coding assistants?|ai[- ](?:tools?|assistants?|coding))(?![\p{L}\p{N}])/iu;
 
 /**
- * The latest visitor message is an AI-tool question, or a follow-up naming a tool after one
- * ("Did he use any AI tools like chatgpt or claude?" → "What about chatgpt").
+ * A short follow-up that only moves the subject to the assistant: "I meant you", "What about
+ * the chatbot?", "And this assistant?". After an AI-tool question (about the website or not),
+ * it asks the same thing about the assistant.
+ */
+const ASSISTANT_FOLLOW_UP =
+  /^\s*(?:(?:no|ok(?:ay)?|sorry|and|but|so|well),?\s+)*(?:(?:i\s+)?mean[t]?|what\s+about|how\s+about|and|also|same\s+(?:for|with)|for)?\s*(?:you|u|yourself|(?:the|this|your|his)\s+(?:ai\s+)?(?:chat\s?bot|bot|assistant|ai\s+assistant))(?:\s+(?:too|then|as\s+well|instead|though))?\s*[?!.]*\s*$/iu;
+
+export function isAssistantFollowUp(message: string): boolean {
+  return ASSISTANT_FOLLOW_UP.test(message.replace(/[‘’]/g, "'"));
+}
+
+/**
+ * The latest visitor message is an AI-tool question about the assistant (or unclear), or a
+ * follow-up to an AI-tool question: a bare tool name after one about the assistant ("Did he
+ * use any AI tools like chatgpt or claude?" → "What about chatgpt"), or a short "I meant you" /
+ * "What about the chatbot?" after one about anything, the website included. A bare tool name
+ * after a question about the website stays about the website.
  */
 export function isAiToolTurn(conversation: Turn[]): boolean {
   const users = conversation.filter((m) => m.role === "user").map((m) => m.content);
   const latest = users.at(-1) ?? "";
   if (isAiToolQuestion(latest)) return true;
+  const earlier = users.slice(0, -1).slice(-3);
+  if (isAssistantFollowUp(latest) && earlier.some((q) => hasAiToolWording(q))) return true;
   return (
     AI_TOOL_MENTION.test(latest) &&
-    users
-      .slice(0, -1)
-      .slice(-3)
-      .some((q) => isAiToolQuestion(q))
+    aiToolSubject(latest) !== "website" &&
+    earlier.some((q) => isAiToolQuestion(q))
   );
 }
 

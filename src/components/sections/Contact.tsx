@@ -60,13 +60,9 @@ export function Contact() {
   return (
     <section id="contact" className="relative py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          eyebrow="CONTACT"
-          title="Let's build something useful."
-          subtitle="Have a project, opportunity, or idea worth discussing? Send me a message."
-        />
+        <SectionHeading title="Contact" />
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
             <form onSubmit={submit} className="glass glow-border relative overflow-hidden p-7">
               <div className="grid gap-4 sm:grid-cols-2">
@@ -117,7 +113,7 @@ export function Contact() {
                   aria-busy={isSubmitting}
                   className={`relative inline-flex items-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-all duration-300 ${
                     isSubmitting
-                      ? "cursor-not-allowed bg-blue-950 opacity-90"
+                      ? "cursor-not-allowed bg-primary opacity-80"
                       : "glow-cyan hover:scale-[1.03]"
                   }`}
                   style={isSubmitting ? undefined : { background: "var(--gradient-brand)" }}
@@ -144,7 +140,7 @@ export function Contact() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 grid place-items-center bg-background/90 p-7 text-center backdrop-blur-md"
+                    className="absolute inset-0 grid place-items-center bg-background/90 p-7 text-center"
                   >
                     <motion.div
                       initial={{ scale: 0.6 }}
@@ -178,10 +174,10 @@ export function Contact() {
                 href={`tel:${PHONE.replace(/\s/g, "")}`}
                 className="mt-5 flex items-center gap-3 text-sm text-muted-foreground hover:text-foreground"
               >
-                <Phone className="h-4 w-4 text-accent" /> {PHONE}
+                <Phone className="h-4 w-4 text-muted-foreground" /> {PHONE}
               </a>
               <div className="mt-4 flex items-center gap-3 text-sm text-muted-foreground">
-                <Mail className="h-4 w-4 shrink-0 text-accent" />
+                <Mail className="h-4 w-4 shrink-0 text-muted-foreground" />
                 <a href={`mailto:${EMAIL}`} className="truncate hover:text-foreground">
                   {EMAIL}
                 </a>

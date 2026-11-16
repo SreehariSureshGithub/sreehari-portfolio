@@ -29,6 +29,10 @@ import {
   isAiToolQuestion,
   isTruthChallenge,
   isAiToolTurn,
+  aiToolSubject,
+  hasAiToolWording,
+  isAiToolQuery,
+  isAssistantFollowUp,
   isRulesChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
@@ -1297,7 +1301,8 @@ for (const [message, aiTool, truth] of [
   ["Did he use Codex or Claude Code to build you?", true, false],
   ["Did he use ChatGPT?", true, false],
   ["Did he use Copilot or Cursor?", true, false],
-  ["Did he use AI to build this site?", true, false],
+  ["Did he use AI to build this?", true, false],
+  ["Did he use AI to build this site?", false, false],
   ["Was it built with Claude?", true, false],
   ["Did he write every line himself?", true, false],
   ["Are you lying?", false, true],
@@ -1308,6 +1313,7 @@ for (const [message, aiTool, truth] of [
   ["Does he use AI in his projects?", false, false],
   ["Did he use YOLO?", false, false],
   ["What is your stack?", false, false],
+  ["Did he build the LiDAR system himself?", false, false],
 ] as [string, boolean, boolean][]) {
   check(
     `"${message}" → AI tools ${aiTool}, truth ${truth}; never a hiring message`,
@@ -1347,6 +1353,102 @@ for (const [message, aiTool, truth] of [
     !JSON.stringify(buildModelMessages(q, [], {})).includes("Note: the visitor asks whether"),
   );
 }
+
+// ----------------------- AI tools: website design is open, the assistant is not (2026-11-17) --
+// (a) the website's design / front end → normal retrieval (knowledge/website.md);
+// (b) the assistant → the fixed AI-tools reply; (c) no clear subject → treated as (b).
+for (const [message, subject, fixed] of [
+  ["Did he use AI tools to build the website?", "website", false],
+  ["Did he use AI to design the site?", "website", false],
+  ["Was the portfolio UI built with Claude Code?", "website", false],
+  ["Did he use Lovable for the front end?", "website", false],
+  ["Did he use AI for the layout?", "website", false],
+  ["Did he use Claude Code to build you?", "assistant", true],
+  ["Did he use AI for the chatbot too?", "assistant", true],
+  ["Was the RAG system built with AI tools?", "assistant", true],
+  ["Did he use AI tools to build the chatbot on his website?", "assistant", true],
+  ["Did he use AI to build this?", "unclear", true],
+  ["Did he write all the code himself?", "unclear", true],
+  ["Did he use ChatGPT?", "unclear", true],
+] as [string, string, boolean][]) {
+  check(
+    `"${message}" → subject ${subject}, fixed AI-tools reply ${fixed}`,
+    hasAiToolWording(message) &&
+      aiToolSubject(message) === subject &&
+      isAiToolQuestion(message) === fixed &&
+      isAiToolTurn([{ role: "user", content: message }]) === fixed &&
+      // Either way a small-talk / off-topic routing of it is not trusted.
+      isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message),
+  );
+}
+check(
+  "website design question without AI-tool wording is a normal question",
+  !hasAiToolWording("How was the site designed?") &&
+    !isAiToolTurn([{ role: "user", content: "How was the site designed?" }]),
+);
+{
+  const u = (content: string) => ({ role: "user" as const, content });
+  const a = (content: string) => ({ role: "assistant" as const, content });
+  const site = "Did he use AI tools to build the website?";
+  const siteAnswer = "Yes: he built the website's design and front end with AI tools.";
+  for (const f of [
+    "I meant you",
+    "What about the chatbot?",
+    "And this assistant?",
+    "what about you",
+  ]) {
+    check(`follow-up "${f}" is an assistant follow-up`, isAssistantFollowUp(f));
+    check(
+      `"${site}" → "${f}" gets the fixed AI-tools reply`,
+      isAiToolTurn([u(site), a(siteAnswer), u(f)]),
+    );
+    check(
+      `"${f}" alone, or after a non-AI-tool question, is not`,
+      !isAiToolTurn([u(f)]) &&
+        !isAiToolTurn([u("How was the site designed?"), a(siteAnswer), u(f)]),
+    );
+  }
+  check(
+    '"How was the site designed?" → "Did he use AI for the chatbot too?" gets the fixed reply',
+    isAiToolTurn([
+      u("How was the site designed?"),
+      a(siteAnswer),
+      u("Did he use AI for the chatbot too?"),
+    ]),
+  );
+  check(
+    "a bare tool name after a website AI-tool question stays about the website",
+    !isAiToolTurn([u(site), a(siteAnswer), u("What about chatgpt")]),
+  );
+  for (const notFollowUp of [
+    "Who built you?",
+    "What can you do?",
+    "Tell me about the chatbot's stack",
+  ]) {
+    check(`"${notFollowUp}" is not an assistant follow-up`, !isAssistantFollowUp(notFollowUp));
+  }
+}
+for (const [query, expected] of [
+  ["Did Sreehari use AI tools to build his AI assistant?", true],
+  ["Sreehari AI assistant built with Claude Code", true],
+  ["Did Sreehari use AI tools to build this chatbot?", true],
+  ["Did Sreehari use AI tools to build his portfolio website?", false],
+  ["Who built Sreehari's AI assistant?", false],
+  ["Sreehari's AI assistant tech stack", false],
+  ["How was Sreehari's portfolio website designed?", false],
+] as [string, boolean][]) {
+  check(
+    `router rewrite "${query}" → AI-tool question about the assistant ${expected}`,
+    isAiToolQuery(query) === expected,
+  );
+}
+check(
+  "rule 3 carves out the website and never extends its tools to the assistant",
+  SYSTEM_RULES.includes("His portfolio website's design and front end are different") &&
+    SYSTEM_RULES.includes("never extend them to you") &&
+    SYSTEM_RULES.includes("never say whether AI tools were used to build you") &&
+    SYSTEM_RULES.includes("Your own stack and how you work are still answered from <context>"),
+);
 
 // ------------------------------------------ prompt changes invalidate cached answers --
 // The live site kept serving a cached answer written under the old rule 2 (2026-11-16).

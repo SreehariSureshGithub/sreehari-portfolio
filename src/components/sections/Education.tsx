@@ -7,22 +7,14 @@ export function Education() {
   return (
     <section id="education" className="relative py-16 md:py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          eyebrow="EDUCATION & CERTIFICATIONS"
-          title="Foundations and continued learning"
-        />
+        <SectionHeading title="Education" />
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
           {EDUCATION.map((e, i) => (
             <Reveal key={e.degree} delay={i * 0.08}>
-              <div className="glass glow-border h-full p-7 transition-transform duration-300 hover:-translate-y-1.5">
-                <span
-                  className="grid h-11 w-11 place-items-center rounded-xl text-primary-foreground"
-                  style={{ background: "var(--gradient-brand)" }}
-                >
-                  <GraduationCap className="h-5 w-5" />
-                </span>
-                <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-primary">
+              <div className="glass glow-border h-full p-7">
+                <GraduationCap aria-hidden="true" className="h-6 w-6 text-primary" />
+                <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
                   {e.period}
                 </p>
                 <h3 className="mt-2 font-display text-lg font-semibold">{e.degree}</h3>
@@ -46,7 +38,7 @@ export function Education() {
           {CERTIFICATIONS.map((c, i) => (
             <Reveal key={c} delay={i * 0.05}>
               <div className="glass flex h-full items-center gap-3 p-5 transition-colors duration-300 hover:text-primary">
-                <Award className="h-4.5 w-4.5 shrink-0 text-accent" />
+                <Award className="h-4.5 w-4.5 shrink-0 text-muted-foreground" />
                 <p className="text-sm">{c}</p>
               </div>
             </Reveal>

@@ -10,17 +10,13 @@ export function Experience() {
 
   return (
     <section id="experience" className="relative py-16 md:py-20 lg:py-28">
-      <div className="mx-auto max-w-4xl px-5">
-        <SectionHeading
-          eyebrow="PROFESSIONAL EXPERIENCE"
-          title="Where the work happened"
-          subtitle="Real deployments, measurable results."
-        />
+      <div className="mx-auto max-w-6xl px-5">
+        <SectionHeading title="Experience" />
 
-        <div className="relative mt-16 pl-8 md:pl-12">
+        <div className="relative mt-12 pl-8 md:pl-12">
           <div
             aria-hidden="true"
-            className="absolute bottom-0 left-2 top-2 w-px md:left-3"
+            className="absolute bottom-0 left-[7.5px] top-2 w-px"
             style={{ background: "var(--gradient-brand)", opacity: 0.5 }}
           />
 
@@ -30,7 +26,7 @@ export function Experience() {
               <Reveal key={job.role + job.period} delay={i * 0.06} className="relative mb-6">
                 <span
                   aria-hidden="true"
-                  className="absolute -left-[26px] top-7 grid h-4 w-4 place-items-center rounded-full bg-background md:-left-[38px]"
+                  className="absolute -left-8 top-7 grid h-4 w-4 place-items-center rounded-full bg-background md:-left-12"
                 >
                   <span
                     className="h-3 w-3 rounded-full"
@@ -41,12 +37,12 @@ export function Experience() {
                 <button
                   onClick={() => setOpen(isOpen ? null : i)}
                   aria-expanded={isOpen}
-                  className="glass glow-border w-full p-6 text-left transition-transform duration-300 hover:-translate-y-1"
+                  className="glass glow-border w-full p-6 text-left"
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-2 text-primary">
-                        <Briefcase className="h-4 w-4" />
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Briefcase className="h-4 w-4 text-primary" />
                         <span className="font-mono text-[11px] tracking-[0.2em]">{job.period}</span>
                       </div>
                       <h3 className="mt-2 font-display text-xl font-semibold">{job.role}</h3>
@@ -79,7 +75,7 @@ export function Experience() {
                     <ul className="mt-5 space-y-2.5">
                       {job.highlights.map((h) => (
                         <li key={h} className="flex gap-3 text-sm text-muted-foreground">
-                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                          <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-muted-foreground" />
                           {h}
                         </li>
                       ))}

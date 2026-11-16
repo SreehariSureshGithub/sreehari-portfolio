@@ -9,12 +9,7 @@ import { Projects } from "@/components/sections/Projects";
 import { Education } from "@/components/sections/Education";
 import { Contact } from "@/components/sections/Contact";
 import { Footer } from "@/components/sections/Footer";
-import { ParticleField } from "@/components/fx/ParticleField";
-import { CursorGlow } from "@/components/fx/CursorGlow";
-import { ScrollProgress } from "@/components/fx/ScrollProgress";
 import { BackToTop } from "@/components/fx/BackToTop";
-import { Loader } from "@/components/fx/Loader";
-import { KonamiEasterEgg } from "@/components/fx/Konami";
 
 const title = "Sreehari Suresh — AI & Computer Vision Engineer";
 const description =
@@ -39,10 +34,7 @@ function Divider() {
     <div
       aria-hidden="true"
       className="mx-auto h-px w-full max-w-6xl"
-      style={{
-        background:
-          "linear-gradient(90deg, transparent, color-mix(in oklab, var(--cyan) 35%, transparent), transparent)",
-      }}
+      style={{ background: "var(--border)" }}
     />
   );
 }
@@ -50,10 +42,6 @@ function Divider() {
 function Index() {
   return (
     <main className="relative">
-      <Loader />
-      <ScrollProgress />
-      <ParticleField />
-      <CursorGlow />
       <Nav />
       <Hero />
       <Divider />
@@ -70,7 +58,6 @@ function Index() {
       <Contact />
       <Footer />
       <BackToTop />
-      <KonamiEasterEgg />
       <Toaster theme="dark" position="bottom-center" richColors />
     </main>
   );

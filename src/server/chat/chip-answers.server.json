@@ -1,16 +1,7 @@
 {
-  "knowledgeHash": "sha256:a84a0dab421a6899febd2f7374cfdca1606c6917f1d81213e82b50420d038075",
-  "promptHash": "sha256:fc54d6c63d80b9ad930b672c33e41487",
-  "generatedAt": "2026-11-16T08:58:58.542Z",
+  "knowledgeHash": "sha256:0df0085b4c79a7c74e656bc59a0af794a096b7363be2cc1284d699863b6d5cee",
+  "promptHash": "sha256:47c3301947e02c0f93f1126f4b944559",
+  "generatedAt": "2026-11-16T20:28:23.334Z",
   "model": "openai/gpt-oss-120b",
-  "answers": [
-    {
-      "question": "What is Sreehari doing now?",
-      "answer": "Sreehari is based in Dubai, UAE, actively looking for a full‑time role as an AI Engineer, Machine Learning Engineer, Computer Vision Engineer or Generative AI/LLM Engineer, and while job searching he is building AI projects, including this AI assistant on his portfolio."
-    },
-    {
-      "question": "What's his work experience?",
-      "answer": "Sreehari has about two years of combined industry experience: roughly one year of AI internships at ISMO Bio‑Photonics and Campervan Factory (Aug 2024 – Jul 2025), followed by about a year of freelance AI and automation work (Aug 2025 – Jul 2026). He also completed a data analyst internship in 2022."
-    }
-  ]
+  "answers": []
 }
