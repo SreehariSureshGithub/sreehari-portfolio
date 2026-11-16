@@ -103,7 +103,7 @@ export function KonamiEasterEgg() {
               <X className="h-5 w-5" />
             </button>
             <p className="font-mono text-xs tracking-[0.4em] text-primary">AI MODE ACTIVATED</p>
-            <h3 className="mt-3 text-3xl font-bold text-gradient">Neural Override Engaged</h3>
+            <h3 className="mt-3 text-3xl font-bold text-foreground">Neural Override Engaged</h3>
             <NeuralCanvas />
             <p className="text-sm text-muted-foreground">
               You found the easter egg. 2,500 images annotated, 4ms inference — and apparently a

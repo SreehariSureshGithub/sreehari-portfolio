@@ -22,7 +22,7 @@ export function Education() {
                 >
                   <GraduationCap className="h-5 w-5" />
                 </span>
-                <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-primary">
+                <p className="mt-5 font-mono text-[11px] tracking-[0.2em] text-muted-foreground">
                   {e.period}
                 </p>
                 <h3 className="mt-2 font-display text-lg font-semibold">{e.degree}</h3>

@@ -253,7 +253,7 @@ export default function ChatWindow({ open, onOpenChange, returnFocusRef }: Props
               />
               <span
                 aria-hidden="true"
-                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-primary ring-2 ring-background"
+                className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-muted-foreground ring-2 ring-background"
               />
             </div>
             <div className="min-w-0 flex-1">
@@ -261,7 +261,7 @@ export default function ChatWindow({ open, onOpenChange, returnFocusRef }: Props
                 {CHAT_TEXT.assistantName}
               </DialogTitle>
               <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
-                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-primary" />
+                <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-muted-foreground" />
                 Online
               </p>
               <DialogDescription className="sr-only">

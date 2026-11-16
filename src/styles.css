@@ -157,7 +157,7 @@
 }
 
 @utility text-gradient {
-  color: var(--primary);
+  color: var(--foreground);
 }
 
 @utility glow-cyan {

@@ -89,7 +89,7 @@ export function Projects() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-background via-background/20 to-transparent" />
                       {p.metric && (
-                        <span className="glass absolute right-4 top-4 rounded-full px-3 py-1 font-mono text-[10px] tracking-wider text-primary">
+                        <span className="glass absolute right-4 top-4 rounded-full px-3 py-1 font-mono text-[10px] tracking-wider text-muted-foreground">
                           {p.metric}
                         </span>
                       )}

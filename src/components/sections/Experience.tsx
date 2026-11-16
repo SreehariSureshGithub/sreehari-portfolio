@@ -45,8 +45,8 @@ export function Experience() {
                 >
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <div className="flex items-center gap-2 text-primary">
-                        <Briefcase className="h-4 w-4" />
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Briefcase className="h-4 w-4 text-primary" />
                         <span className="font-mono text-[11px] tracking-[0.2em]">{job.period}</span>
                       </div>
                       <h3 className="mt-2 font-display text-xl font-semibold">{job.role}</h3>

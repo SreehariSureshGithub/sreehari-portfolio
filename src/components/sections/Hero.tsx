@@ -42,7 +42,7 @@ export function Hero() {
             <span className="block text-lg font-medium text-muted-foreground sm:text-xl">
               Hi, I&apos;m
             </span>
-            <span className="text-gradient">Sreehari Suresh</span>
+            <span className="text-foreground">Sreehari Suresh</span>
           </motion.h1>
 
           <motion.p
@@ -125,7 +125,7 @@ export function Hero() {
             transition={{ duration: 0.7, delay: 0.7 + i * 0.1 }}
             className="glass glow-border p-6 text-center"
           >
-            <p className="font-display text-3xl font-bold text-gradient sm:text-4xl">
+            <p className="font-display text-3xl font-bold text-foreground sm:text-4xl">
               <Counter value={s.value} suffix={s.suffix} />
             </p>
             <p className="mt-2 text-xs text-muted-foreground sm:text-sm">{s.label}</p>

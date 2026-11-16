@@ -39,7 +39,9 @@ export function Skills() {
                           <span className="text-muted-foreground transition-colors group-hover:text-foreground">
                             {skill.name}
                           </span>
-                          <span className="font-mono text-[11px] text-primary">{skill.level}%</span>
+                          <span className="font-mono text-[11px] text-muted-foreground">
+                            {skill.level}%
+                          </span>
                         </div>
                         <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-secondary">
                           <motion.div
