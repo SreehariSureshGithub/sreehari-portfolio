@@ -294,9 +294,11 @@ async function handleChat(request: Request): Promise<Response> {
   //    router call decides the intent and rewrites the message as a standalone query; if it
   //    fails, times out or its daily cap is reached, the embedding gate decides as before.
   let routed: RouterResult | undefined;
-  // "Did he use Claude?" (and a follow-up "What about chatgpt"): fixed meaning, no router.
-  const aiTools = router.isAiToolTurn(parsed.messages);
-  if (!aiTools && router.needsRouter({ firstTurn, question, relevance })) {
+  // "Did he use Claude?" (and a follow-up "What about chatgpt", "I meant you"): fixed meaning,
+  // no router. AI-tool questions about the website's design go on as normal questions
+  // (knowledge/website.md answers them).
+  const aiToolsDirect = router.isAiToolTurn(parsed.messages);
+  if (!aiToolsDirect && router.needsRouter({ firstTurn, question, relevance })) {
     const routerStarted = performance.now();
     if (!LIMITS.routerEnabled) routed = { ok: false, reason: "disabled" };
     else if (!(await rl.admitRouterCall())) routed = { ok: false, reason: "capped" };
@@ -322,6 +324,17 @@ async function handleChat(request: Request): Promise<Response> {
   // When the router can't decide (failed, timed out, capped), the embedding gate does. A
   // message with hiring vocabulary counts as relevant there: it is about Sreehari.
   const plan = router.planResponse(routed, retrieval.relevant || router.isHiringMessage(question));
+  // The router's standalone rewrite can reveal an AI-tool question about the assistant that
+  // the visitor's own words don't ("I meant the chatbot" after an AI-tool question): same
+  // fixed meaning and buttons as a direct question.
+  const aiToolsFromQuery =
+    !aiToolsDirect && plan.kind === "answer" && !!plan.query && router.isAiToolQuery(plan.query);
+  if (aiToolsFromQuery) log.aiToolsFromQuery = true;
+  const aiTools = aiToolsDirect || aiToolsFromQuery;
+  // An AI-tool question about the website only ("Did he use AI to design the site?"): the
+  // chunk about the assistant is not added, so its answer can't be extended to the assistant.
+  const websiteAiTools =
+    !aiTools && router.hasAiToolWording(question) && router.aiToolSubject(question) === "website";
 
   // Router unavailable and the gate says off-topic: the fixed refusal, no LLM call. A request
   // to show, drop or change the assistant's instructions gets the fixed "can't change how I
@@ -399,6 +412,7 @@ async function handleChat(request: Request): Promise<Response> {
   //     Not for AI-tool questions: its stack is not the answer to them (prompt rule 3).
   const aboutAssistant =
     !aiTools &&
+    !websiteAiTools &&
     (plan.intent === "assistant" ||
       router.mentionsAssistant(question) ||
       (!!plan.query && router.mentionsAssistant(plan.query)));

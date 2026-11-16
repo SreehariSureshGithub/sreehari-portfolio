@@ -429,6 +429,222 @@
           ]
         }
       ]
+    },
+    {
+      "id": "site-then-chatbot-ai",
+      "_note": "Added 2026-11-17: a website design question, then AI for the chatbot: the second turn gets the fixed reply, with no tool names carried over.",
+      "turns": [
+        {
+          "question": "How was the site designed?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use"
+          ],
+          "expect_actions": false,
+          "complete_fact": true
+        },
+        {
+          "question": "Did he use AI for the chatbot too?",
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "must_not_include": [
+            "did not use",
+            "didn't use",
+            "no AI",
+            "without AI",
+            "every line",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Lovable",
+            "Groq",
+            "gpt-oss",
+            "open-source|open source",
+            "RAG",
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself"
+          ],
+          "max_words": 40,
+          "expect_actions": true
+        }
+      ]
+    },
+    {
+      "id": "website-ai-then-you",
+      "_note": "Added 2026-11-17: follow-up moving the subject to the assistant.",
+      "turns": [
+        {
+          "question": "Did he use AI tools to build the website?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use"
+          ],
+          "expect_actions": false,
+          "complete_fact": true
+        },
+        {
+          "question": "I meant you",
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "must_not_include": [
+            "did not use",
+            "didn't use",
+            "no AI",
+            "without AI",
+            "every line",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Lovable",
+            "Groq",
+            "gpt-oss",
+            "open-source|open source",
+            "RAG",
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself"
+          ],
+          "max_words": 40,
+          "expect_actions": true
+        }
+      ]
+    },
+    {
+      "id": "website-ai-then-chatbot",
+      "_note": "Added 2026-11-17: follow-up moving the subject to the assistant.",
+      "turns": [
+        {
+          "question": "Did he use AI tools to build the website?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use"
+          ],
+          "expect_actions": false,
+          "complete_fact": true
+        },
+        {
+          "question": "What about the chatbot?",
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "must_not_include": [
+            "did not use",
+            "didn't use",
+            "no AI",
+            "without AI",
+            "every line",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Lovable",
+            "Groq",
+            "gpt-oss",
+            "open-source|open source",
+            "RAG",
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself"
+          ],
+          "max_words": 40,
+          "expect_actions": true
+        }
+      ]
+    },
+    {
+      "id": "website-ai-then-assistant",
+      "_note": "Added 2026-11-17: follow-up moving the subject to the assistant.",
+      "turns": [
+        {
+          "question": "Did he use AI tools to build the website?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use"
+          ],
+          "expect_actions": false,
+          "complete_fact": true
+        },
+        {
+          "question": "And this assistant?",
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "must_not_include": [
+            "did not use",
+            "didn't use",
+            "no AI",
+            "without AI",
+            "every line",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Lovable",
+            "Groq",
+            "gpt-oss",
+            "open-source|open source",
+            "RAG",
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself"
+          ],
+          "max_words": 40,
+          "expect_actions": true
+        }
+      ]
     }
   ]
 }

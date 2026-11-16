@@ -1,0 +1,50 @@
+{
+  "summary": {
+    "label": "run13c-project-rag",
+    "date": "2026-11-16T20:24:15.153Z",
+    "cases": 1,
+    "passed": 1,
+    "accuracy": "100.0%",
+    "byType": {
+      "fact": "1/1",
+      "unknown": "0/0",
+      "refusal": "0/0",
+      "smalltalk": "0/0",
+      "locked": "0/0"
+    },
+    "refusalPrecision": "n/a",
+    "refusalRecall": "n/a",
+    "avgMs": 1218,
+    "p95Ms": 1218,
+    "avgFirstTextMs": 1093,
+    "llmCases": 1,
+    "avgLlmMs": 1218,
+    "p95LlmMs": 1218,
+    "fallbackRate": "100.0%",
+    "truncated": 0,
+    "avgTokens": 2234,
+    "chipsPassed": "0/0",
+    "conversationTurns": "0/0",
+    "routedShare": "0.0%"
+  },
+  "results": [
+    {
+      "id": "project-rag",
+      "question": "Tell me about the AI assistant on his portfolio.",
+      "type": "fact",
+      "pass": true,
+      "problems": [],
+      "answer": "The AI assistant on Sreehari’s portfolio website is a Retrieval‑Augmented Generation (RAG) chatbot built by him in November 2026. It uses TanStack Start with React 19 and TypeScript on Vercel, open‑source bge‑small‑en‑v1.5 embeddings, BM25 keyword search, and Groq‑hosted gpt‑oss‑120b (with gpt‑oss‑20b fallback). Upstash Redis handles rate‑limiting and caching. The system runs on free tiers and includes guardrails against off‑topic and injection attacks.",
+      "status": 200,
+      "totalMs": 1218,
+      "firstTextMs": 1093,
+      "outcome": "fallback",
+      "provider": "groq-fallback",
+      "finish": "stop",
+      "tokens": 2234,
+      "router": "fast_path"
+    }
+  ],
+  "chips": [],
+  "conversations": []
+}

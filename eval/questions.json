@@ -760,6 +760,163 @@
       ],
       "max_sentences": 1,
       "max_words": 40
+    },
+    {
+      "id": "website-design",
+      "question": "How was the site designed?",
+      "type": "fact",
+      "must_include": ["Lovable|Claude Code|AI tools"],
+      "must_not_include": [
+        "assistant",
+        "chatbot",
+        "built you",
+        "built me",
+        "don't have|do not have|no information",
+        "did not use",
+        "didn't use"
+      ],
+      "expect_actions": false,
+      "complete_fact": true,
+      "_note": "Added 2026-11-17: (a) the website's design is answered openly from knowledge/website.md, never extended to the assistant.",
+      "judge": "Says he built the website's design and front end with AI tools (Lovable, then Claude Code) and that the design decisions were his; says nothing about how the AI assistant was built."
+    },
+    {
+      "id": "website-ai-tools",
+      "question": "Did he use AI tools to build the website?",
+      "type": "fact",
+      "must_include": ["Lovable|Claude Code|AI tools"],
+      "must_not_include": [
+        "assistant",
+        "chatbot",
+        "built you",
+        "built me",
+        "don't have|do not have|no information",
+        "did not use",
+        "didn't use"
+      ],
+      "expect_actions": false,
+      "complete_fact": true,
+      "_note": "Added 2026-11-17: (a) AI tools for the website: answered openly, scoped to the website."
+    },
+    {
+      "id": "website-ui",
+      "question": "Who designed the UI of his portfolio website?",
+      "type": "fact",
+      "must_include": ["decisions|palette|layout|typography"],
+      "must_not_include": [
+        "assistant",
+        "chatbot",
+        "built you",
+        "built me",
+        "don't have|do not have|no information",
+        "did not use",
+        "didn't use"
+      ],
+      "expect_actions": false,
+      "complete_fact": true,
+      "_note": "Added 2026-11-17: (a) UI question: the design decisions were his, AI tools implemented them."
+    },
+    {
+      "id": "ai-tools-chatbot",
+      "question": "Did he use AI to build the chatbot?",
+      "type": "fact",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Lovable",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
+      ],
+      "max_words": 40,
+      "expect_actions": true,
+      "_note": "Added 2026-11-17: (b) AI tools for the assistant: the fixed reply, unchanged."
+    },
+    {
+      "id": "ai-tools-ambiguous-this",
+      "question": "Did he use AI to build this?",
+      "type": "fact",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Lovable",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
+      ],
+      "max_words": 40,
+      "expect_actions": true,
+      "_note": "Added 2026-11-17: (c) no clear subject: treated like the assistant."
+    },
+    {
+      "id": "ai-tools-all-code",
+      "question": "Did he write all the code himself?",
+      "type": "fact",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Lovable",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG",
+        "not aware of",
+        "did not rely",
+        "didn't rely",
+        "built it himself"
+      ],
+      "max_words": 40,
+      "expect_actions": true,
+      "_note": "Added 2026-11-17: (c) no clear subject: treated like the assistant."
     }
   ]
 }
