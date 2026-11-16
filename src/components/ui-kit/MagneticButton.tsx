@@ -25,19 +25,6 @@ export function MagneticButton({
   const ref = useRef<HTMLElement>(null);
   const [ripples, setRipples] = useState<Ripple[]>([]);
 
-  const handleMove = (e: MouseEvent) => {
-    const el = ref.current;
-    if (!el) return;
-    const r = el.getBoundingClientRect();
-    const x = e.clientX - (r.left + r.width / 2);
-    const y = e.clientY - (r.top + r.height / 2);
-    el.style.transform = `translate3d(${x * 0.22}px, ${y * 0.3}px, 0)`;
-  };
-
-  const handleLeave = () => {
-    if (ref.current) ref.current.style.transform = "translate3d(0,0,0)";
-  };
-
   const handleClick = (e: MouseEvent) => {
     const el = ref.current;
     if (el) {
@@ -50,10 +37,10 @@ export function MagneticButton({
   };
 
   const base = cn(
-    "relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-sm font-semibold transition-[box-shadow,background-color,color] duration-300 will-change-transform",
+    "group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-7 py-3.5 text-sm font-semibold transition-[box-shadow,background-color,border-color,color] duration-300",
     variant === "primary"
       ? "text-primary-foreground glow-cyan"
-      : "glass text-foreground hover:text-primary",
+      : "glass text-foreground hover:border-primary/55 hover:text-primary",
     className,
   );
 
@@ -62,8 +49,7 @@ export function MagneticButton({
       {variant === "primary" && (
         <span
           aria-hidden="true"
-          className="absolute inset-0"
-          style={{ background: "var(--gradient-brand)" }}
+          className="absolute inset-0 bg-primary transition-opacity duration-300 group-hover:opacity-85"
         />
       )}
       <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
@@ -87,8 +73,6 @@ export function MagneticButton({
         download={download}
         target={href.startsWith("http") ? "_blank" : undefined}
         rel={href.startsWith("http") ? "noreferrer" : undefined}
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
         onClick={handleClick}
         className={base}
       >
@@ -102,8 +86,6 @@ export function MagneticButton({
       ref={ref as React.RefObject<HTMLButtonElement>}
       type="button"
       aria-label={ariaLabel}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
       onClick={handleClick}
       className={base}
     >

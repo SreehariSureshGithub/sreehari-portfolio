@@ -1,19 +1,17 @@
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { Loader2, MessageCircle } from "lucide-react";
 import { CHAT_UI } from "@/lib/chat-copy";
-import { useLoaderCovering } from "@/lib/loader-signal";
 
 // The always-present floating button. It stays tiny: the chat window (Radix Dialog, hook,
 // avatar) is a separate chunk, fetched on hover/focus, when the browser is idle, or on click.
 //
 // It is rendered only after hydration, so it is never visible while it can't react: a click
-// on a server-rendered button before React attaches its handler would be lost silently. It also
-// waits for the page loader (splash) to start fading, then fades in with the page; a safety
-// timeout shows it anyway if the splash never ends. While the window chunk downloads the
-// button shows a spinner, so a click always gets visible feedback.
+// on a server-rendered button before React attaches its handler would be lost silently. It
+// appears shortly after mount and fades in. While the window chunk downloads the button shows
+// a spinner, so a click always gets visible feedback.
 
-/** Show the button this long after hydration even if the splash is still reported as covering. */
-const LOADER_SAFETY_MS = 4000;
+/** Delay after mount before the button fades in. */
+const SHOW_DELAY_MS = 600;
 
 const loadChatWindow = () => import("./ChatWindow");
 const ChatWindow = lazy(loadChatWindow);
@@ -41,13 +39,12 @@ export function ChatLauncher() {
   const [windowReady, setWindowReady] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const loaderCovering = useLoaderCovering();
-  const [loaderTimedOut, setLoaderTimedOut] = useState(false);
+  const [showButton, setShowButton] = useState(false);
 
   useEffect(() => setInteractive(true), []);
 
   useEffect(() => {
-    const timer = setTimeout(() => setLoaderTimedOut(true), LOADER_SAFETY_MS);
+    const timer = setTimeout(() => setShowButton(true), SHOW_DELAY_MS);
     return () => clearTimeout(timer);
   }, []);
 
@@ -74,7 +71,6 @@ export function ChatLauncher() {
   }, []);
 
   if (!interactive) return null;
-  const showButton = !loaderCovering || loaderTimedOut;
   const opening = open && !windowReady;
   return (
     <>

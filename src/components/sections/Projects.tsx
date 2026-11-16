@@ -146,7 +146,7 @@ export function Projects() {
             role="dialog"
             aria-modal="true"
             aria-label={active.title}
-            className="fixed inset-0 z-[80] grid place-items-center bg-background/80 p-4 backdrop-blur-xl"
+            className="fixed inset-0 z-[80] grid place-items-center bg-background/90 p-4"
           >
             <motion.div
               initial={{ scale: 0.94, y: 24 }}

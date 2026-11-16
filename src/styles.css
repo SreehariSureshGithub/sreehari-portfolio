@@ -37,8 +37,6 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
-  --color-cyan: var(--cyan);
-  --color-violet: var(--violet);
   --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -66,19 +64,10 @@
   --border: rgb(209 207 192 / 0.1);
   --input: rgb(209 207 192 / 0.14);
   --ring: #f76f53;
-  /* Legacy names kept so existing components keep resolving. */
-  --cyan: #f76f53;
-  --violet: #f76f53;
 
   --gradient-brand: linear-gradient(var(--primary), var(--primary));
-  --gradient-glow: radial-gradient(
-    circle at center,
-    color-mix(in oklab, var(--primary) 10%, transparent),
-    transparent 70%
-  );
   --glass-bg: var(--card);
   --shadow-glow: 0 0 0 1px var(--border);
-  --shadow-violet: none;
 }
 
 @layer base {
@@ -164,23 +153,6 @@
   box-shadow: var(--shadow-glow);
 }
 
-@utility grid-lines {
-  background-image:
-    linear-gradient(to right, color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px),
-    linear-gradient(to bottom, color-mix(in oklab, var(--foreground) 4%, transparent) 1px, transparent 1px);
-  background-size: 64px 64px;
-}
-
-@keyframes float-slow {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-14px);
-  }
-}
-
 @keyframes pulse-ring {
   0% {
     transform: scale(0.9);
@@ -190,21 +162,4 @@
     transform: scale(1.6);
     opacity: 0;
   }
-}
-
-@keyframes marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-@utility animate-float {
-  animation: float-slow 6s ease-in-out infinite;
-}
-
-@utility animate-marquee {
-  animation: marquee 28s linear infinite;
 }

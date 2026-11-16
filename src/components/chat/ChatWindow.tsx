@@ -54,7 +54,7 @@ function Bubble({
           "max-w-[85%] rounded-2xl px-3.5 py-2 text-[0.94rem] leading-relaxed shadow-sm",
           mine
             ? "rounded-br-md border border-primary/35 bg-primary/15 text-foreground"
-            : "rounded-bl-md border border-border bg-[var(--glass-bg)] text-foreground backdrop-blur-md",
+            : "rounded-bl-md border border-border bg-[var(--glass-bg)] text-foreground",
           message.kind === "error" && "border-destructive/40",
         )}
       >
@@ -142,7 +142,7 @@ function ContactButtons({ actions }: { actions: ContactAction[] }) {
 function TypingIndicator() {
   return (
     <li className="flex justify-start" aria-label="Assistant is typing">
-      <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-[var(--glass-bg)] px-4 py-3 backdrop-blur-md">
+      <div className="flex items-center gap-1 rounded-2xl rounded-bl-md border border-border bg-[var(--glass-bg)] px-4 py-3">
         {[0, 150, 300].map((delay) => (
           <span
             key={delay}
@@ -218,7 +218,7 @@ export default function ChatWindow({ open, onOpenChange, returnFocusRef }: Props
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogPortal>
-        <DialogOverlay className="z-[120] bg-background/60 backdrop-blur-md" />
+        <DialogOverlay className="z-[120] bg-background/90" />
         <DialogPrimitive.Content
           onPointerDownOutside={(e) => {
             // The second click of a quick double-click on the launcher lands on the backdrop.
@@ -236,7 +236,7 @@ export default function ChatWindow({ open, onOpenChange, returnFocusRef }: Props
             returnFocusRef.current?.focus();
           }}
           className={cn(
-            "fixed inset-0 z-[120] flex h-[100dvh] w-full flex-col overflow-hidden border-border bg-[color-mix(in_oklab,var(--background)_90%,transparent)] shadow-[var(--shadow-glow)] backdrop-blur-xl focus:outline-none",
+            "fixed inset-0 z-[120] flex h-[100dvh] w-full flex-col overflow-hidden border-border bg-background shadow-[var(--shadow-glow)] focus:outline-none",
             "sm:inset-auto sm:left-1/2 sm:top-1/2 sm:h-[min(680px,calc(100dvh-4rem))] sm:w-[min(440px,calc(100vw-2rem))] sm:-translate-x-1/2 sm:-translate-y-1/2 sm:rounded-3xl sm:border",
             "data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=open]:fade-in-0 data-[state=closed]:fade-out-0 data-[state=open]:slide-in-from-bottom-4 sm:data-[state=open]:zoom-in-95 sm:data-[state=closed]:zoom-out-95 duration-200",
           )}
@@ -291,7 +291,7 @@ export default function ChatWindow({ open, onOpenChange, returnFocusRef }: Props
               className="flex flex-col gap-3 px-4 py-4"
             >
               <li className="flex justify-start">
-                <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-border bg-[var(--glass-bg)] px-3.5 py-2 text-[0.94rem] leading-relaxed backdrop-blur-md">
+                <div className="max-w-[85%] rounded-2xl rounded-bl-md border border-border bg-[var(--glass-bg)] px-3.5 py-2 text-[0.94rem] leading-relaxed">
                   {CHAT_TEXT.greeting}
                 </div>
               </li>

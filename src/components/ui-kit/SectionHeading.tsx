@@ -16,11 +16,6 @@ export function SectionHeading({
         <span className="text-foreground">{title}</span>
       </h2>
       {subtitle && <p className="mt-4 text-base text-muted-foreground">{subtitle}</p>}
-      <div
-        aria-hidden="true"
-        className="mx-auto mt-8 h-px w-40"
-        style={{ background: "var(--gradient-brand)" }}
-      />
     </Reveal>
   );
 }

@@ -144,7 +144,7 @@ export function Contact() {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    className="absolute inset-0 grid place-items-center bg-background/90 p-7 text-center backdrop-blur-md"
+                    className="absolute inset-0 grid place-items-center bg-background/90 p-7 text-center"
                   >
                     <motion.div
                       initial={{ scale: 0.6 }}
