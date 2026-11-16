@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import { Menu, X } from "lucide-react";
 import { MagneticButton } from "@/components/ui-kit/MagneticButton";
@@ -14,30 +14,15 @@ const LINKS = [
 ];
 
 export function Nav() {
-  const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-
   return (
-    <header
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-500 ${
-        scrolled ? "py-3" : "py-5"
-      }`}
-    >
+    <header className="fixed inset-x-0 top-0 z-50 px-4 py-3">
       <nav
         aria-label="Main"
-        className={`mx-auto flex max-w-6xl items-center justify-between rounded-full px-5 py-3 transition-all duration-500 ${
-          scrolled ? "glass mx-4 !bg-background/85 backdrop-blur-md md:mx-auto" : "bg-transparent"
-        }`}
+        className="glass mx-auto flex max-w-6xl items-center justify-between rounded-full !bg-background/85 px-5 py-3 backdrop-blur-md"
       >
-        <a href="#top" className="group flex items-center gap-2">
-          <img src="/logo.png" alt="Sreehari Logo" className="h-9 w-9 object-contain" />
+        <a href="#top" className="group flex items-center">
           <span className="font-display text-sm font-bold tracking-tight">
             Sreehari<span className="text-primary">.</span>dev
           </span>
@@ -78,7 +63,7 @@ export function Nav() {
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
-            className="glass mx-4 mt-3 space-y-1 p-4 md:hidden"
+            className="glass mx-auto mt-3 max-w-6xl space-y-1 p-4 md:hidden"
           >
             {LINKS.map((l) => (
               <li key={l.href}>

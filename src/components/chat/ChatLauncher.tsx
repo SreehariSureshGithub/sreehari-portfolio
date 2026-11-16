@@ -75,7 +75,7 @@ export function ChatLauncher() {
   return (
     <>
       {showButton && (
-        <div className="group fixed bottom-6 right-6 z-[110] motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-[600ms] motion-safe:ease-in-out">
+        <div className="group fixed bottom-4 right-4 z-[110] md:bottom-6 md:right-6 motion-safe:animate-in motion-safe:fade-in-0 motion-safe:duration-[600ms] motion-safe:ease-in-out">
           <span
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 rounded-full border border-primary/50 motion-safe:animate-[pulse-ring_2.8s_ease-out_infinite]"
@@ -95,12 +95,12 @@ export function ChatLauncher() {
               setMounted(true);
               setOpen(true);
             }}
-            className="glass glow-cyan relative grid h-14 w-14 place-items-center rounded-full text-primary transition-transform duration-200 hover:scale-105 active:scale-95"
+            className="glass glow-cyan relative grid h-12 w-12 place-items-center rounded-full text-primary transition-transform duration-200 hover:scale-105 active:scale-95"
           >
             {opening ? (
-              <Loader2 className="h-6 w-6 animate-spin" aria-hidden="true" />
+              <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
             ) : (
-              <MessageCircle className="h-6 w-6" aria-hidden="true" />
+              <MessageCircle className="h-5 w-5" aria-hidden="true" />
             )}
           </button>
           <span

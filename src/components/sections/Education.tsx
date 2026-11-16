@@ -7,12 +7,9 @@ export function Education() {
   return (
     <section id="education" className="relative py-16 md:py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          eyebrow="EDUCATION & CERTIFICATIONS"
-          title="Foundations and continued learning"
-        />
+        <SectionHeading title="Education" />
 
-        <div className="mt-16 grid gap-6 md:grid-cols-2">
+        <div className="mt-12 grid gap-6 md:grid-cols-2">
           {EDUCATION.map((e, i) => (
             <Reveal key={e.degree} delay={i * 0.08}>
               <div className="glass glow-border h-full p-7 transition-transform duration-300 hover:-translate-y-1.5">

@@ -6,7 +6,7 @@ export function BackToTop() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 700);
+    const onScroll = () => setShow(window.scrollY > 600);
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
@@ -22,9 +22,9 @@ export function BackToTop() {
           whileTap={{ scale: 0.94 }}
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
-          className="glass glow-cyan fixed bottom-24 right-7 z-50 grid h-12 w-12 place-items-center rounded-full text-primary"
+          className="glass glow-cyan fixed bottom-[84px] right-6 z-50 hidden h-10 w-10 place-items-center rounded-full text-primary md:grid"
         >
-          <ArrowUp className="h-5 w-5" />
+          <ArrowUp className="h-4.5 w-4.5" />
         </motion.button>
       )}
     </AnimatePresence>

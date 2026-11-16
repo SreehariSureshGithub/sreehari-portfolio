@@ -28,11 +28,7 @@ export function Projects() {
   return (
     <section id="projects" className="relative py-16 md:py-20 lg:py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          eyebrow="PROJECTS"
-          title="Featured work"
-          subtitle="Detection pipelines, edge systems and conversational AI prototypes."
-        />
+        <SectionHeading title="Projects" />
 
         <Reveal className="mt-12 flex flex-col items-center gap-5">
           <div className="flex flex-wrap justify-center gap-2">

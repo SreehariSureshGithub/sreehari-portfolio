@@ -60,13 +60,9 @@ export function Contact() {
   return (
     <section id="contact" className="relative py-28">
       <div className="mx-auto max-w-6xl px-5">
-        <SectionHeading
-          eyebrow="CONTACT"
-          title="Let's build something useful."
-          subtitle="Have a project, opportunity, or idea worth discussing? Send me a message."
-        />
+        <SectionHeading title="Contact" />
 
-        <div className="mt-16 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="mt-12 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
             <form onSubmit={submit} className="glass glow-border relative overflow-hidden p-7">
               <div className="grid gap-4 sm:grid-cols-2">
