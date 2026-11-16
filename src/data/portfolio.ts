@@ -1,10 +1,5 @@
 import traffic from "@/assets/proj-traffic.jpg";
 import lidar from "@/assets/proj-lidar.jpg";
-import currency from "@/assets/proj-currency.jpg";
-import voicebot from "@/assets/proj-voicebot.jpg";
-import medical from "@/assets/proj-medical.jpg";
-import sentiment from "@/assets/proj-sentiment.jpg";
-import signs from "@/assets/proj-signs.jpg";
 
 export { EMAIL, GITHUB, LINKEDIN, PHONE, RESUME_URL } from "./contact";
 
@@ -139,9 +134,11 @@ export const EXPERIENCE = [
   },
 ];
 
-export type Project = {
+/** Client and internship work: the code is private, so these show an image and "Private code". */
+export type WorkProject = {
   title: string;
-  category: "Computer Vision" | "Embedded AI" | "GenAI" | "Machine Learning";
+  /** Small label shown above the title (rendered upper-case). */
+  category: string;
   image: string;
   tags: string[];
   metric?: string;
@@ -149,17 +146,22 @@ export type Project = {
   detail: string;
 };
 
-export const PROJECTS: Project[] = [
-  {
-    title: "Intelligent Traffic Management",
-    category: "Computer Vision",
-    image: traffic,
-    tags: ["YOLO", "OpenCV", "Python"],
-    metric: "98% detection accuracy",
-    summary: "Dynamic traffic signal optimization from live video.",
-    detail:
-      "A YOLO-based prototype that processes live video to count vehicles and dynamically adjust signal timings. Achieved 98% detection accuracy in controlled tests, prioritizing high-volume lanes while guaranteeing fairness through minimum wait times.",
-  },
+/** Public repositories. Text is written only from each repo's README and code. */
+export type OpenSourceProject = {
+  title: string;
+  category: string;
+  url: string;
+  language: string;
+  tags: string[];
+  summary: string;
+  detail: string;
+};
+
+const GITHUB_REPO = (name: string) => `https://github.com/SreehariSureshGithub/${name}`;
+
+export const GITHUB_REPOSITORIES_URL = "https://github.com/SreehariSureshGithub?tab=repositories";
+
+export const WORK_PROJECTS: WorkProject[] = [
   {
     title: "Hybrid LiDAR + Camera Safety System",
     category: "Embedded AI",
@@ -171,51 +173,68 @@ export const PROJECTS: Project[] = [
       "Fused LiDAR range data with camera detections on a Raspberry Pi for real-time obstacle alerting. Delivered visual and audio warnings, validated across urban and forest environments, and cut power draw 25–35% with intelligent camera activation logic.",
   },
   {
+    title: "Intelligent Traffic Management",
+    category: "Computer Vision",
+    image: traffic,
+    tags: ["YOLO", "OpenCV", "Python"],
+    metric: "98% detection accuracy",
+    summary: "Dynamic traffic signal optimization from live video.",
+    detail:
+      "A YOLO-based prototype that processes live video to count vehicles and dynamically adjust signal timings. Achieved 98% detection accuracy in controlled tests, prioritizing high-volume lanes while guaranteeing fairness through minimum wait times.",
+  },
+];
+
+export const OPEN_SOURCE_PROJECTS: OpenSourceProject[] = [
+  {
+    title: "Sreehari Portfolio",
+    category: "GenAI",
+    url: GITHUB_REPO("sreehari-portfolio"),
+    language: "TypeScript",
+    tags: ["RAG", "React", "TanStack Start", "Vercel"],
+    summary: "This portfolio, with a RAG assistant that answers recruiters' questions about me.",
+    detail:
+      "The site you are on, with a floating chat assistant that answers questions about me using only a knowledge base I wrote myself. Each question goes through hybrid retrieval (local bge-small embeddings plus BM25, merged with rank fusion), and the top three chunks go to Groq's gpt-oss-120b, with gpt-oss-20b as a fallback. A small router model rewrites follow-up questions into standalone queries and turns away off-topic messages. Answers stream through an output guard, with per-visitor rate limits and an answer cache on Upstash Redis, all on free tiers.",
+  },
+  {
+    title: "VIN Reconciliation Pipeline",
+    category: "Automation",
+    url: GITHUB_REPO("vin-reconciliation-pipeline"),
+    language: "Python",
+    tags: ["Data pipeline", "pandas", "QuickBooks", "Reconciliation"],
+    summary:
+      "Reconciles a car dealer's stock sheet against QuickBooks exports and bank statements, per VIN.",
+    detail:
+      "A Python command-line tool that reads raw QuickBooks report exports, a dealer's stock sheet and optional bank statements, and reconciles them per VIN and per deal cycle, so a car bought back and resold under the same VIN is handled cycle by cycle. Every link to a QuickBooks bill or invoice is labelled with how it was made (document reference, VIN, or VIN plus amount), and ambiguous cases go to a review queue instead of being guessed. It calculates consignment settlements and writes one Excel workbook with summary, reconciliation, settlement, discrepancy and review sheets. On the real dealership dataset it was built from (about 4,000 deal cycles), it matched the hand-verified results on 99.5% of purchase references and 100% of purchase values.",
+  },
+  {
     title: "Fake Currency Detection",
     category: "Computer Vision",
-    image: currency,
-    tags: ["ORB", "SSIM", "Python"],
-    metric: "94% detection accuracy",
-    summary: "Automated forgery detection for Indian currency.",
+    url: GITHUB_REPO("Fake-Currency-Detection-System"),
+    language: "Jupyter Notebook",
+    tags: ["OpenCV", "ORB", "SSIM", "Image processing"],
+    summary: "Checks Indian ₹500 and ₹2000 notes for counterfeits using image processing.",
     detail:
-      "Verifies security features such as bleed lines, security threads and watermarks using ORB keypoint matching and SSIM comparison, achieving 94% detection accuracy on forged notes.",
+      "Jupyter notebooks that check a photo of an Indian ₹500 or ₹2000 note against 10 security features. Seven features are located with ORB keypoint matching and compared with reference templates using SSIM scores, the left and right bleed lines are counted from a thresholded image, and the serial number panel passes if contour detection finds 9 characters. A Tkinter GUI takes the image and denomination, then shows each feature's score, its pass or fail status, and how many of the 10 features were verified.",
   },
   {
-    title: "AI Voicebot",
-    category: "GenAI",
-    image: voicebot,
-    tags: ["LLM", "NLP", "Flask", "TTS"],
-    metric: "Text + voice interaction",
-    summary: "Conversational assistant with text and voice interaction.",
+    title: "Tiny Keyword Spotting",
+    category: "Audio ML",
+    url: GITHUB_REPO("tiny-keyword-spotting"),
+    language: "Python",
+    tags: ["PyTorch", "Keyword spotting", "torchaudio", "Edge AI"],
+    summary: "A lightweight CNN that detects the spoken word “stop”, trained on Speech Commands.",
     detail:
-      "Combines NLP, deep learning models and text-to-speech to hold natural conversations across text and voice. Deployed with Flask for local testing and visual inference.",
+      "A keyword-spotting model built from scratch in PyTorch that listens to a one-second clip and decides whether someone said “stop”. Audio at any sample rate is converted to 16 kHz mono and a 40-band log-mel spectrogram, then classified by a 3-layer CNN with about 23k parameters (a 97 KB checkpoint). It is trained on Google Speech Commands with speaker-independent splits, a weighted loss for class imbalance, and time-shift, gain and noise augmentation. On 900 test clips from unseen speakers it reaches 96.9% accuracy with 98.4% recall, and the repo includes scripts for data preparation, training, evaluation and prediction.",
   },
   {
-    title: "Medical Image Analyzer",
-    category: "Machine Learning",
-    image: medical,
-    tags: ["Computer Vision", "Deep Learning"],
-    summary: "Deep learning analysis of medical imagery.",
-    detail:
-      "Exploratory deep learning pipeline for analyzing medical scans — preprocessing, augmentation, model training and evaluation with precision/recall reporting.",
-  },
-  {
-    title: "Sentiment Analysis",
-    category: "Machine Learning",
-    image: sentiment,
-    tags: ["NLP", "ML"],
-    summary: "Text sentiment classification pipeline.",
-    detail:
-      "End-to-end NLP prototype covering tokenization, embeddings and classifier training to score sentiment polarity across customer text data.",
-  },
-  {
-    title: "Traffic Sign Detection",
+    title: "Traffic Sign Recognition",
     category: "Computer Vision",
-    image: signs,
-    tags: ["YOLO", "OpenCV"],
-    summary: "Road sign recognition in live video.",
+    url: GITHUB_REPO("Traffic-Sign-Detection"),
+    language: "Jupyter Notebook",
+    tags: ["TensorFlow", "Keras", "CNN", "Image classification"],
+    summary: "A CNN that classifies traffic sign images, with a desktop GUI for uploads.",
     detail:
-      "YOLO detector trained to recognize road signage in varied lighting, with a real-time OpenCV inference loop and benchmarked frame latency.",
+      "A Keras/TensorFlow convolutional neural network that classifies traffic sign images into 43 classes, such as speed limits, no entry, yield and pedestrian crossings. Images are resized to 30×30 pixels and passed through four convolutional layers with max pooling and dropout, trained for 15 epochs with a held-out validation split. A Tkinter desktop app loads the trained model, so you can upload a sign image and see the predicted class.",
   },
 ];
 
