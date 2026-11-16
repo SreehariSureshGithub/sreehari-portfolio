@@ -109,9 +109,13 @@ export function Projects() {
         <Reveal className="mt-16">
           <h3 className={groupLabel}>Open source</h3>
         </Reveal>
-        <div className="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-6 flex flex-wrap justify-center gap-6">
           {OPEN_SOURCE_PROJECTS.map((p, i) => (
-            <Reveal key={p.url} delay={i * 0.06}>
+            <Reveal
+              key={p.url}
+              delay={i * 0.06}
+              className="w-full md:w-[calc((100%-1.5rem)/2)] lg:w-[calc((100%-3rem)/3)]"
+            >
               <article className={`${card} p-6`}>
                 <p className={categoryLabel}>{p.category}</p>
                 <h4 className="mt-2 font-display text-lg font-semibold">{p.title}</h4>

@@ -125,7 +125,7 @@ export function Hero() {
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.7 + i * 0.1 }}
-              className="flex flex-col lg:px-8 lg:first:pl-0"
+              className="flex flex-col items-center text-center lg:px-8"
             >
               <dt className="order-2 mt-1 text-xs text-muted-foreground sm:text-sm">{s.label}</dt>
               <dd className="order-1 font-display text-3xl font-bold tabular-nums text-foreground sm:text-4xl">
