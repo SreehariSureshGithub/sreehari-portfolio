@@ -10,6 +10,7 @@ import {
   contactLinesAsked,
   resultFigures,
   withoutUsedResults,
+  SANCTIONED_RULE_PHRASES,
   SYSTEM_RULES,
 } from "../src/server/chat/prompt.server.ts";
 import { isJsonRejection, readProviderError } from "../src/server/chat/providers.server.ts";
@@ -22,6 +23,8 @@ import {
   isBareRefusal,
   isHiringMessage,
   isIdentityQuestion,
+  isAiToolQuestion,
+  isTruthChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
   mentionsAssistant,
@@ -1262,6 +1265,81 @@ for (const [q, expected] of assistantMentions)
   );
   const b = withPinnedChunks([fake(PINNED_CHUNK_IDS[0]!)]);
   check("a retrieved pinned chunk isn't duplicated", b.length === PINNED_CHUNK_IDS.length);
+}
+
+// ------------------------------------- no invented negatives, AI tools, truth (2026-11-16) --
+// Live: "Did he use AI tools like Codex or Claude Code?" → "He did not use Codex or Claude".
+check(
+  "rule 1: no negative unless <context> says so; rule 2 limited to history, employers, degrees, certifications",
+  SYSTEM_RULES.includes(
+    "Never state that Sreehari did not do, use, know or have something unless <context> says so explicitly",
+  ) &&
+    SYSTEM_RULES.includes(
+      "Only his work history, employers, degrees and certifications are complete lists",
+    ) &&
+    !SYSTEM_RULES.includes("When <context> gives a complete list"),
+);
+const AI_TOOLS_WORDING =
+  "I don't have information about whether he used an AI tool for that. You can contact him directly for more information.";
+check(
+  "rule 3: the AI-tools reply is a sanctioned phrase and is in the rules",
+  SANCTIONED_RULE_PHRASES.includes(AI_TOOLS_WORDING) && SYSTEM_RULES.includes(AI_TOOLS_WORDING),
+);
+for (const [message, aiTool, truth] of [
+  ["Did he use AI tools?", true, false],
+  ["Did he use AI tools like Codex or Claude Code?", true, false],
+  ["Did he use Codex or Claude Code to build you?", true, false],
+  ["Did he use ChatGPT?", true, false],
+  ["Did he use Copilot or Cursor?", true, false],
+  ["Did he use AI to build this site?", true, false],
+  ["Was it built with Claude?", true, false],
+  ["Did he write every line himself?", true, false],
+  ["Are you lying?", false, true],
+  ["Is this true?", false, true],
+  ["is that true", false, true],
+  ["Is it true that he worked at ISMO Bio-Photonics?", false, false],
+  ["What AI models did he work with?", false, false],
+  ["Does he use AI in his projects?", false, false],
+  ["Did he use YOLO?", false, false],
+  ["What is your stack?", false, false],
+] as [string, boolean, boolean][]) {
+  check(
+    `"${message}" → AI tools ${aiTool}, truth ${truth}; never a hiring message`,
+    isAiToolQuestion(message) === aiTool &&
+      isTruthChallenge(message) === truth &&
+      !isHiringMessage(message),
+  );
+  if (aiTool || truth) {
+    check(
+      `"${message}" → main model, not the router`,
+      !needsRouter({ firstTurn: true, question: message, relevance: 0.2 }) &&
+        !needsRouter({ firstTurn: false, question: message, relevance: 0.9 }) &&
+        isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message),
+    );
+  }
+}
+{
+  const q = [{ role: "user" as const, content: "Did he use Codex or Claude Code to build you?" }];
+  const ai = buildModelMessages(q, [], { aiTools: true });
+  check(
+    "AI-tools note: after the message, the sanctioned wording, no hiring reminder",
+    ai.at(-1)!.role === "system" &&
+      ai.at(-1)!.content.includes(AI_TOOLS_WORDING) &&
+      !ai.some((m) => m.content.startsWith("Reminder for this reply")),
+  );
+  const t = buildModelMessages([{ role: "user", content: "Are you lying?" }], [], {
+    truthChallenge: true,
+  });
+  check(
+    "truth note: after the message, one sentence, only the information Sreehari provided",
+    t.at(-1)!.role === "system" &&
+      t.at(-1)!.content.includes("in one sentence") &&
+      t.at(-1)!.content.includes("only answer from the information Sreehari provided"),
+  );
+  check(
+    "neither note without its flag",
+    !JSON.stringify(buildModelMessages(q, [], {})).includes("Note: the visitor asks whether"),
+  );
 }
 
 console.log(`\n${count - failures.length}/${count} checks passed.`);

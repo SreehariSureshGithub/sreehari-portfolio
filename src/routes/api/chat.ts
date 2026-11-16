@@ -371,10 +371,13 @@ async function handleChat(request: Request): Promise<Response> {
   // him a try?"). Every hiring answer invites a conversation, so it gets them too. Anything
   // else is decided from the finished answer (see withActions): a complete factual answer
   // gets none.
+  // "Did he use Claude Code?" and "Are you lying?" both point to him: buttons too.
+  const aiTools = router.isAiToolQuestion(question);
+  const truthChallenge = router.isTruthChallenge(question);
   const plannedActions =
     contactActionsFor(question) ??
     (plan.query ? contactActionsFor(plan.query) : undefined) ??
-    (hiring ? CONTACT_ACTIONS : undefined);
+    (hiring || aiTools || truthChallenge ? CONTACT_ACTIONS : undefined);
 
   // 9. LLM path: the remaining 0.75 of the message + the global daily cap (one round trip).
   const llmAdmitStarted = performance.now();
@@ -391,14 +394,16 @@ async function handleChat(request: Request): Promise<Response> {
   //     pick the one that fits the question, and a short reminder follows the visitor's
   //     message (see HIRING_REMINDER).
   //     The chunk about this assistant is added only when the message may be about it.
+  //     Not for AI-tool questions: its stack is not the answer to them (prompt rule 3).
   const aboutAssistant =
-    plan.intent === "assistant" ||
-    router.mentionsAssistant(question) ||
-    (!!plan.query && router.mentionsAssistant(plan.query));
+    !aiTools &&
+    (plan.intent === "assistant" ||
+      router.mentionsAssistant(question) ||
+      (!!plan.query && router.mentionsAssistant(plan.query)));
   const contactAsked =
     asksForContactDetails(question) || (!!plan.query && asksForContactDetails(plan.query));
   const context = rag.withPinnedChunks(results, {
-    evidence: hiring || !!plannedActions,
+    evidence: hiring || (!!plannedActions && !aiTools && !truthChallenge),
     assistant: aboutAssistant,
     // His contact details only when the visitor asks how to reach him.
     contact: contactAsked,
@@ -421,6 +426,8 @@ async function handleChat(request: Request): Promise<Response> {
     // the interview" counts as asking for contact, and their buttons carry the details.
     ...(contactAsked && !hiring ? { contactDetails: contactLinesAsked(question) } : {}),
     identity: router.isIdentityQuestion(question),
+    aiTools,
+    truthChallenge,
   };
   const modelMessages = buildModelMessages(conversation, context, promptNotes);
   const encoder = new TextEncoder();

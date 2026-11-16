@@ -578,6 +578,134 @@
       "expect_actions": true,
       "expect_intent": ["sreehari", "fast_path", "fallback:misrouted", "fallback:json_rejected"],
       "judge": "Declines to say he has four years without repeating the claim, states the true figure (about two years) and gives one concrete result with its number."
+    },
+    {
+      "id": "ai-tools",
+      "question": "Did he use AI tools?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: the knowledge says nothing about AI tools; never a yes or a no, no tool or model names.",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG"
+      ],
+      "max_words": 40,
+      "expect_actions": true
+    },
+    {
+      "id": "ai-tools-codex-claude",
+      "question": "Did he use Codex or Claude Code to build you?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: the knowledge says nothing about AI tools; never a yes or a no, no tool or model names.",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG"
+      ],
+      "max_words": 40,
+      "expect_actions": true
+    },
+    {
+      "id": "ai-tools-chatgpt",
+      "question": "Did he use ChatGPT?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: the knowledge says nothing about AI tools; never a yes or a no, no tool or model names.",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG"
+      ],
+      "max_words": 40,
+      "expect_actions": true
+    },
+    {
+      "id": "ai-tools-every-line",
+      "question": "Did he write every line himself?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: the knowledge says nothing about AI tools; never a yes or a no, no tool or model names.",
+      "may_say_unknown": true,
+      "must_include": [
+        "don't have|do not have|doesn't have|no information",
+        "contact him|reach out to him|reach him|get in touch with him|ask him"
+      ],
+      "must_not_include": [
+        "did not use",
+        "didn't use",
+        "no AI",
+        "without AI",
+        "every line",
+        "Claude",
+        "Codex",
+        "ChatGPT",
+        "Copilot",
+        "Cursor",
+        "Groq",
+        "gpt-oss",
+        "open-source|open source",
+        "RAG"
+      ],
+      "max_words": 40,
+      "expect_actions": true
+    },
+    {
+      "id": "truth-lying",
+      "question": "Are you lying?",
+      "type": "fact",
+      "_note": "Added 2026-11-16: one sentence, answers from the information Sreehari provided, points to the buttons; no deflection.",
+      "may_say_unknown": true,
+      "must_include": ["information", "Sreehari|him"],
+      "must_not_include": [],
+      "max_sentences": 1,
+      "max_words": 40,
+      "expect_actions": true
     }
   ]
 }

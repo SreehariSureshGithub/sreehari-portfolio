@@ -225,8 +225,37 @@ const HIRING_TERMS =
  */
 export function isMisrouted(decision: RouterDecision, latestMessage: string): boolean {
   return (
-    "reply" in decision && (isHiringMessage(latestMessage) || isIdentityQuestion(latestMessage))
+    "reply" in decision &&
+    (isHiringMessage(latestMessage) ||
+      isIdentityQuestion(latestMessage) ||
+      isAiToolQuestion(latestMessage) ||
+      isTruthChallenge(latestMessage))
   );
+}
+
+/**
+ * Whether he used AI tools or coding assistants to build something ("Did he use Codex or
+ * Claude Code to build you?", "Did he write every line himself?"). The knowledge says nothing
+ * either way; the primary once answered "He did not use Codex or Claude" (2026-11-16). These
+ * get a fixed meaning (prompt rule 3) and the contact buttons. Needs a "use" verb or the
+ * every-line wording, so "What AI models did he work with?" is not one.
+ */
+const AI_TOOL_QUESTION =
+  /(?<![\p{L}\p{N}])(?:use[ds]?|using|rel(?:y|ied|ies) on|help(?:ed)? (?:by|from)|with the help of|assisted by|generated (?:by|with)|built with|made with|written (?:by|with)|wrote (?:it )?with)(?: an?| the| any| some)? (?:(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|coding assistants?|ai[- ](?:tools?|assistants?|coding(?: tools?| assistants?)?|help|pair[- ]programm\w*))(?![\p{L}\p{N}])|ai (?:to|for) (?:build|write|code|make|create|develop)\w*)|(?<![\p{L}\p{N}])(?:every|each) line(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])by hand(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])(?:all|every bit) of the code(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])vibe[- ]?cod/iu;
+
+export function isAiToolQuestion(message: string): boolean {
+  return AI_TOOL_QUESTION.test(message.replace(/[‘’]/g, "'"));
+}
+
+/**
+ * The whole message doubts the answers ("Are you lying?", "Is this true?"). Anchored to the
+ * whole message: "Is it true that he worked at ISMO?" is a fact question.
+ */
+const TRUTH_CHALLENGE =
+  /^\s*(?:(?:are|r) (?:you|u) (?:lying|telling the truth|making (?:this|that|it|things) up|hallucinating|being honest)|is (?:this|that|it|all this|this all) (?:true|real|correct|accurate|right|legit)|(?:that's|thats|that is) (?:a lie|not true|false)|(?:should|can) i (?:trust|believe) (?:you|this|that)|how do i know (?:this|that|it) is true)(?: or not)?\s*[?!.]*\s*$/i;
+
+export function isTruthChallenge(message: string): boolean {
+  return TRUTH_CHALLENGE.test(message.replace(/[‘’]/g, "'"));
 }
 
 /**
@@ -414,6 +443,8 @@ export function needsRouter(input: {
   // line and the chunk about the assistant. The router read the first as small talk and
   // rewrote the second as a question about Sreehari's boss (eval run 10, 2026-11-15).
   if (isIdentityQuestion(input.question)) return false;
+  // These get a fixed meaning in the prompt (rule 3); the router adds nothing to them.
+  if (isAiToolQuestion(input.question) || isTruthChallenge(input.question)) return false;
   if (!input.firstTurn) return true;
   const words = input.question.trim().split(/\s+/).filter(Boolean).length;
   return !(words > 3 && input.relevance >= LIMITS.routerFastPathRelevance);
