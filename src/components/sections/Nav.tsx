@@ -20,7 +20,7 @@ export function Nav() {
     <header className="fixed inset-x-0 top-0 z-50 px-4 py-3">
       <nav
         aria-label="Main"
-        className="glass mx-auto flex max-w-6xl items-center justify-between rounded-full !bg-background/85 py-3 pl-[26px] pr-4 backdrop-blur-md md:pl-[30px] md:pr-3"
+        className="glass nav-raise mx-auto flex max-w-6xl items-center justify-between rounded-full !bg-background/85 py-3 pl-[26px] pr-4 backdrop-blur-md md:pl-[30px] md:pr-3"
       >
         <a href="#top" className="group flex items-center">
           <span className="font-display text-lg font-bold tracking-tight">

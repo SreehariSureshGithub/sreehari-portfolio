@@ -145,6 +145,30 @@
   }
 }
 
+/* Nav pill: floats above the page; on hover (pointer devices only) it moves slightly toward the viewer. */
+@utility nav-raise {
+  box-shadow:
+    0 8px 24px -12px rgb(0 0 0 / 0.6),
+    0 2px 6px -2px rgb(0 0 0 / 0.4);
+  transform-origin: center;
+  transition:
+    transform 300ms ease-out,
+    box-shadow 300ms ease-out;
+  backface-visibility: hidden;
+  @media (hover: hover) {
+    &:hover {
+      box-shadow:
+        0 14px 32px -12px rgb(0 0 0 / 0.7),
+        0 4px 10px -2px rgb(0 0 0 / 0.45);
+    }
+  }
+  @media (hover: hover) and (prefers-reduced-motion: no-preference) {
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+}
+
 @utility text-gradient {
   color: var(--foreground);
 }
