@@ -263,7 +263,7 @@ async function handleChat(request: Request): Promise<Response> {
     const cacheStarted = performance.now();
     const [blocked, hit] = await Promise.all([
       limited(),
-      cache.lookupAnswer(rag.KNOWLEDGE_HASH, queryVector).then((h) => {
+      cache.lookupAnswer(cache.answerCacheKey(rag.KNOWLEDGE_HASH), queryVector).then((h) => {
         timings.cache = ms(cacheStarted);
         return h;
       }),
@@ -551,7 +551,12 @@ async function handleChat(request: Request): Promise<Response> {
           }
           if (queryVector) {
             const storeStarted = performance.now();
-            await cache.storeAnswer(rag.KNOWLEDGE_HASH, question, queryVector, final.text);
+            await cache.storeAnswer(
+              cache.answerCacheKey(rag.KNOWLEDGE_HASH),
+              question,
+              queryVector,
+              final.text,
+            );
             timings.store = ms(storeStarted);
           }
         }

@@ -3,6 +3,9 @@
 // In-process: no server, no Groq calls. Exits with code 1 if any check fails.
 
 import rawIndex from "../src/server/rag/knowledge-index.server.json" with { type: "json" };
+import { answerCacheKey } from "../src/server/chat/answer-cache.server.ts";
+import { answerSetupHash, isChipFileCurrent } from "../src/server/chat/chip-answers.server.ts";
+import { SYSTEM_PROMPT_HASH, systemPromptHash } from "../src/server/chat/prompt-hash.server.ts";
 import { asksForContactDetails } from "../src/server/chat/contact-actions.server.ts";
 import {
   buildModelMessages,
@@ -43,6 +46,7 @@ import {
 import { CHAT_TEXT } from "../src/lib/chat-copy.ts";
 import {
   EVIDENCE_CHUNK_IDS,
+  KNOWLEDGE_HASH,
   ASSISTANT_CHUNK_IDS,
   CONTACT_PIN_IDS,
   PINNED_CHUNK_IDS,
@@ -1339,6 +1343,36 @@ for (const [message, aiTool, truth] of [
   check(
     "neither note without its flag",
     !JSON.stringify(buildModelMessages(q, [], {})).includes("Note: the visitor asks whether"),
+  );
+}
+
+// ------------------------------------------ prompt changes invalidate cached answers --
+// The live site kept serving a cached answer written under the old rule 2 (2026-11-16).
+{
+  const changedRules = `${SYSTEM_RULES} (changed)`;
+  const changedRouter = `${ROUTER_INSTRUCTIONS} (changed)`;
+  check(
+    "system-prompt hash: covers the rules and the router instructions",
+    systemPromptHash() === SYSTEM_PROMPT_HASH &&
+      systemPromptHash(changedRules) !== SYSTEM_PROMPT_HASH &&
+      systemPromptHash(SYSTEM_RULES, changedRouter) !== SYSTEM_PROMPT_HASH,
+  );
+  const k = "sha256:knowledge";
+  check(
+    "answer cache key: knowledge hash plus prompt hash; either change gives a new key",
+    answerCacheKey(k).startsWith(`${k}:`) &&
+      answerCacheKey(k).includes(SYSTEM_PROMPT_HASH) &&
+      answerCacheKey(k) !== answerCacheKey(k, systemPromptHash(changedRules)) &&
+      answerCacheKey(k) !== answerCacheKey(k, systemPromptHash(SYSTEM_RULES, changedRouter)) &&
+      answerCacheKey(k) !== answerCacheKey("sha256:other"),
+  );
+  const built = { knowledgeHash: KNOWLEDGE_HASH, promptHash: answerSetupHash() };
+  check(
+    "chip answers: served only when built from these rules and this knowledge",
+    isChipFileCurrent(built) &&
+      !isChipFileCurrent({ ...built, promptHash: answerSetupHash(changedRules) }) &&
+      !isChipFileCurrent(built, KNOWLEDGE_HASH, answerSetupHash(changedRules)) &&
+      !isChipFileCurrent({ ...built, knowledgeHash: "sha256:old" }),
   );
 }
 

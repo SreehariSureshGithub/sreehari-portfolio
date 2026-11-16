@@ -1,8 +1,9 @@
 // Semantic answer cache for first-turn questions (no conversation history).
 //
 // A new question reuses a cached answer when its embedding has cosine similarity ≥ 0.95 with a
-// cached question built from the SAME knowledge hash (so editing knowledge/ invalidates
-// everything). Entries live 7 days, at most ~500 per knowledge hash, oldest pruned first.
+// cached question built from the SAME knowledge hash AND the same system prompt (so editing
+// knowledge/, the rules or the router instructions invalidates everything; see
+// answerCacheKey). Entries live 7 days, at most ~500 per knowledge hash, oldest pruned first.
 // Only real answers are stored — never refusals, "missing" replies, guarded answers or errors —
 // and a cached answer still goes through the output guard before it is sent.
 //
@@ -14,7 +15,16 @@
 
 import { createHash } from "node:crypto";
 import { Redis } from "@upstash/redis";
+import { SYSTEM_PROMPT_HASH } from "./prompt-hash.server.ts";
 import { LIMITS, TEXT } from "./settings.server.ts";
+
+/**
+ * The cache key prefix: the knowledge hash plus the system-prompt hash. Answers written under
+ * other knowledge or other rules are never found, whatever their age.
+ */
+export function answerCacheKey(knowledgeHash: string, promptHash: string = SYSTEM_PROMPT_HASH) {
+  return `${knowledgeHash}:prompt-${promptHash}`;
+}
 
 type Entry = { vec: Float32Array; t: number };
 type Store = {

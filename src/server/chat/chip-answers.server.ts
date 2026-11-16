@@ -19,9 +19,9 @@ export type ChipAnswersFile = {
 const data = chipData as ChipAnswersFile;
 
 /** Changes whenever the rules or the number of retrieved chunks change. */
-export function answerSetupHash(): string {
+export function answerSetupHash(rules: string = SYSTEM_RULES): string {
   return `sha256:${createHash("sha256")
-    .update(`${SYSTEM_RULES}\nk=${RETRIEVAL_CONFIG.k}`)
+    .update(`${rules}\nk=${RETRIEVAL_CONFIG.k}`)
     .digest("hex")
     .slice(0, 32)}`;
 }
@@ -32,7 +32,16 @@ export const normalizeChipQuestion = (q: string) =>
     .replace(/[^\p{L}\p{N}]+/gu, " ")
     .trim();
 
-const current = data.knowledgeHash === KNOWLEDGE_HASH && data.promptHash === answerSetupHash();
+/** A chip file is served only if it was built from this knowledge and these rules. */
+export function isChipFileCurrent(
+  file: Pick<ChipAnswersFile, "knowledgeHash" | "promptHash">,
+  knowledgeHash: string = KNOWLEDGE_HASH,
+  setupHash: string = answerSetupHash(),
+): boolean {
+  return file.knowledgeHash === knowledgeHash && file.promptHash === setupHash;
+}
+
+const current = isChipFileCurrent(data);
 const byQuestion = new Map(
   current ? data.answers.map((a) => [normalizeChipQuestion(a.question), a.answer]) : [],
 );
