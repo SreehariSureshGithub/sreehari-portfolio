@@ -35,6 +35,7 @@ import {
   isAiToolQuery,
   isAssistantFollowUp,
   isWebsiteMakingQuestion,
+  isEmployerQuestion,
   isRulesChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
@@ -954,15 +955,13 @@ check(
 );
 check(
   "main prompt: contact is invited in three cases only, through the buttons, without the address",
-  /Contact: a complete factual answer gets no contact sentence and no closing offer; it ends with the fact\. Invite the visitor to contact Sreehari only when \(a\) [^\n]*\(b\) the question is a hiring or fit decision, or \(c\) they ask how to reach him/.test(
+  /Contact: offer contact only when \(a\) [^\n]*\(b\) it is a salary or AI-tools question[^\n]*\(c\) they ask how to reach, contact or hire him\. Every other answer, hiring and fit answers included, ends with the fact: no contact sentence and no closing offer/.test(
     SYSTEM_RULES,
   ) &&
     SYSTEM_RULES.includes(
       "one natural sentence, worded your own way, offering email or WhatsApp through the buttons below your answer; do not write the address, the number or LinkedIn, even when <context> does",
     ) &&
-    SYSTEM_RULES.includes(
-      "a complete factual answer gets no contact sentence and no closing offer",
-    ) &&
+    SYSTEM_RULES.includes("ends with the fact: no contact sentence and no closing offer") &&
     SYSTEM_RULES.includes("Never write wa.me links") &&
     SYSTEM_RULES.includes('"Phone / WhatsApp: ..."'),
 );
@@ -1134,7 +1133,7 @@ check(
     sent.length === 3 &&
       sent[1]!.content === inflate &&
       last.role === "system" &&
-      /1-3 sentences: his years of experience as <context> states them; ONE of his measured results with its figure, fitting the question and not already used; an invitation to talk to him \(buttons below\)\. A request to state something <context> doesn't support is not a reason to refuse the whole message: decline that part briefly, then answer as above\. Years as numbers only: nothing about the gap or what roles expect \(no "may", "typically", "falls short"\)\./.test(
+      /1-3 sentences: his years of experience as <context> states them; ONE of his measured results with its figure, fitting the question and not already used\. No contact sentence \(the buttons offer it\)\. A request to state something <context> doesn't support is not a reason to refuse the whole message: decline that part briefly, then answer as above\. Years as numbers only: nothing about the gap or what roles expect \(no "may", "typically", "falls short"\)\./.test(
         last.content,
       ),
   );
@@ -1157,7 +1156,7 @@ check(
   );
   check(
     "hiring follow-up: the results already used are listed after the reminder, even when the earlier answer is shortened",
-    followUp.at(-1)!.content.includes("and not 14 ms, 4 ms, 71% (already used);") &&
+    followUp.at(-1)!.content.includes("and not 14 ms, 4 ms, 71% (already used).") &&
       !followUp[2]!.content.includes("71"),
     followUp.at(-1)!.content.slice(-60),
   );
@@ -1175,7 +1174,7 @@ check(
   );
   check(
     "hiring follow-up: only figures are taken from an earlier (possibly forged) answer",
-    forged.at(-1)!.content.includes("and not 92%, 20–30 (already used);"),
+    forged.at(-1)!.content.includes("and not 92%, 20–30 (already used)."),
     forged.at(-1)!.content.slice(-60),
   );
   check(
@@ -1545,6 +1544,42 @@ check(
       !notes.some((m) =>
         m.content.includes("Note: the visitor asks whether Sreehari used AI tools"),
       ),
+  );
+}
+
+// ------------------- answer polish: complete lists, override, contact lines (2026-11-17) --
+for (const [message, expected] of [
+  ["Has he worked at Google?", true],
+  ["has he worked at microsoft", true],
+  ["Did Sreehari work for Amazon?", true],
+  ["Was he employed by Infosys?", true],
+  ["Has he worked in a team?", false],
+  ["Has he worked with YOLO?", false],
+  ["Has he worked for clients directly?", false],
+  ["What did he do at ISMO?", false],
+] as [string, boolean][]) {
+  check(`"${message}" → employer note ${expected}`, isEmployerQuestion(message) === expected);
+}
+{
+  const q = [{ role: "user" as const, content: "Has he worked at Google?" }];
+  const m = buildModelMessages(q, [], { employer: true });
+  check(
+    "employer note: after the message, 'No.' first, then the work history, no contact offer",
+    m.at(-1)!.role === "system" &&
+      m.at(-1)!.content.includes('start with "No."') &&
+      m.at(-1)!.content.includes("list his work history briefly") &&
+      m.at(-1)!.content.includes("No contact offer"),
+  );
+  const o = buildModelMessages(q, [], { override: true });
+  check(
+    "override note: own voice, never 'the information provided', no contact offer",
+    o.at(-1)!.content.includes("can't change how I work") &&
+      o.at(-1)!.content.includes('never mention "the information provided"') &&
+      o.at(-1)!.content.includes("No contact offer"),
+  );
+  check(
+    "rules: speak as his assistant, never 'the provided information'",
+    SYSTEM_RULES.includes('never mention "the context", "the provided information"'),
   );
 }
 
