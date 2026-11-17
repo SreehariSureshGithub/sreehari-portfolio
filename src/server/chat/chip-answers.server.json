@@ -1,7 +1,20 @@
 {
-  "knowledgeHash": "sha256:0df0085b4c79a7c74e656bc59a0af794a096b7363be2cc1284d699863b6d5cee",
-  "promptHash": "sha256:47c3301947e02c0f93f1126f4b944559",
-  "generatedAt": "2026-11-16T20:28:23.334Z",
+  "knowledgeHash": "sha256:4c0cf99d651816012b34cbd50a240dd46151faf6d976c43fb91739a58ee3cdd9",
+  "promptHash": "sha256:bd7acd0df5d3853b84e0f75f69697678",
+  "generatedAt": "2026-11-17T10:46:07.283Z",
   "model": "openai/gpt-oss-120b",
-  "answers": []
+  "answers": [
+    {
+      "question": "What is Sreehari doing now?",
+      "answer": "Sreehari is based in Dubai, UAE, where he moved in November 2026. He is actively looking for a role as an AI Engineer, Machine Learning Engineer, Computer Vision Engineer, or Generative AI/LLM Engineer, and has been deepening his skills in LLMs and Retrieval‑Augmented Generation, including building the RAG assistant on his portfolio."
+    },
+    {
+      "question": "What's his work experience?",
+      "answer": "Sreehari has about two years of combined industry experience: roughly one year of AI internships at ISMO Bio‑Photonics and Campervan Factory (Aug 2024 – Jul 2025), followed by about a year of freelance AI and automation work (Aug 2025 – Jul 2026). He also completed a one‑month data analyst internship in 2022."
+    },
+    {
+      "question": "How can I contact him?",
+      "answer": "Phone / WhatsApp: +971 50 862 4546  \nEmail: sreehari.official0606@gmail.com  \nLinkedIn: linkedin.com/in/sreeharisureshofficial"
+    }
+  ]
 }
