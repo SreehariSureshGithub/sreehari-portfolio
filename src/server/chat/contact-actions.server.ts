@@ -43,7 +43,7 @@ export const CONTACT_ACTIONS: readonly ContactAction[] = Object.freeze([
 /** Knowledge chunks about reaching him (ids come from the `##` headings; see build-index). */
 export const CONTACT_CHUNK_IDS: readonly string[] = [
   "profile-how-to-contact",
-  "faq-how-do-i-schedule-an-interview-with",
+  "faq-what-is-the-best-way-to-contact",
 ];
 
 /**

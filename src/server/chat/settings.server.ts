@@ -37,21 +37,29 @@ export const LIMITS = {
   perIpPerDay: intFromEnv("CHAT_RATE_PER_IP_DAY", 30),
   /**
    * Questions that reach the LLM, all visitors together, sized so a full day fits inside
-   * Groq's 200,000 tokens/day per model (confirmed by a 429 on 2026-11-12). Measured
-   * 2026-11-15 (eval run 10, server logs): an ordinary answer ~1,750 tokens, a hiring answer
-   * ~2,200 (results chunk and reminder), a router call ~800. Cached prompt tokens are not
-   * subtracted: caching is best-effort (see docs/chatbot/chatbot-settings.md, Limits).
-   * Worst day, 120 hiring answers at 2,250: the primary serves the first 88 (198K), the
-   * fallback the other 32 (72K) next to 120 router calls (96K) = 168K. Both under 200K.
-   * It was 100, sized for 2,500–3,150 tokens per answer.
+   * Groq's free daily quota: 200,000 tokens/day per model, on each model separately (a 429
+   * confirmed it on 2026-11-12; headers on 2026-11-17 showed 1,000 requests/day and 8,000
+   * tokens/minute per model, so tokens are the limit). The answer chain is gpt-oss-120b →
+   * gpt-oss-20b → qwen3.8-27b (providers.server.ts), and gpt-oss-20b also runs the router.
+   * Per answer, with the knowledge rewritten on 2026-11-17: ~2,600 tokens for an ordinary
+   * answer, ~3,000 for a hiring answer (results chunk and reminder); a router call ~800.
+   * Cached prompt tokens are not subtracted: caching is best-effort.
+   * Worst day, every answer a hiring answer at 3,000:
+   *   gpt-oss-120b  66 answers                                 = 198K
+   *   gpt-oss-20b   120 router calls (96K) + 34 answers (102K) = 198K
+   *   qwen3.8-27b   66 answers                                 = 198K
+   *   = 166 answers, so 160 leaves a margin. An ordinary day (2,600) fits ~192.
+   * It was 120 with two models (and 100 before that).
    */
-  globalPerDay: intFromEnv("CHAT_RATE_GLOBAL_DAY", 120),
+  globalPerDay: intFromEnv("CHAT_RATE_GLOBAL_DAY", 160),
   /**
    * Query-understanding router (intent + standalone search query), on the fallback model by
    * default. It shares that model's 200,000 tokens/day with fallback answers. A call
    * measured 784–839 tokens on average (2026-11-15), so 120 calls ≈ 96K tokens, which
-   * leaves ~104K for fallback answers (32 are needed on the worst day, 72K). Past the cap,
-   * the embedding gate decides (no LLM call). CHAT_ROUTER=off disables it entirely. It was 100.
+   * leaves ~104K for its share of answers (34 on the worst day, see globalPerDay). Kept at
+   * 120 when globalPerDay went to 160: more router calls would take tokens from those answers,
+   * and past the cap the embedding gate decides (no LLM call). CHAT_ROUTER=off disables it
+   * entirely. It was 100.
    */
   routerEnabled: process.env.CHAT_ROUTER !== "off",
   routerGlobalPerDay: intFromEnv("CHAT_ROUTER_GLOBAL_DAY", 120),

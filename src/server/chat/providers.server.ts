@@ -1,12 +1,12 @@
 // LLM providers over plain fetch (OpenAI-compatible chat completions; no SDKs).
-// One primary + at most one fallback, tried once each — never retried in a loop.
+// A primary and a short chain of fallbacks, each tried once in order — never retried in a loop.
 
 import { LIMITS } from "./settings.server.ts";
 
 export type LlmMessage = { role: "system" | "user" | "assistant"; content: string };
 
 type Provider = {
-  name: "groq" | "groq-fallback" | "gemini" | "groq-router";
+  name: "groq" | "groq-fallback" | `groq-fallback-${number}` | "gemini" | "groq-router";
   url: string;
   key: string;
   model: string;
@@ -136,18 +136,54 @@ const REASONING_HEADROOM = 110;
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GEMINI_URL = "https://generativelanguage.googleapis.com/v1beta/openai/chat/completions";
 
+/**
+ * Request fields per Groq model family. gpt-oss reasons at "low" with the reasoning hidden.
+ * Qwen3 can switch reasoning off ("none") and hide it, so it needs no headroom and never sends
+ * <think> text (checked 2026-11-17: no reasoning tokens, no <think> tag). Anything else gets
+ * only the answer cap: an unknown reasoning field would make every call fail with HTTP 400.
+ */
+export function groqExtra(model: string): Record<string, unknown> {
+  if (/^openai\/gpt-oss/i.test(model)) {
+    return {
+      max_completion_tokens: LIMITS.maxAnswerTokens + REASONING_HEADROOM,
+      reasoning_effort: "low",
+      include_reasoning: false,
+    };
+  }
+  if (/^qwen\/qwen3/i.test(model)) {
+    return {
+      max_completion_tokens: LIMITS.maxAnswerTokens,
+      reasoning_effort: "none",
+      reasoning_format: "hidden",
+    };
+  }
+  return { max_completion_tokens: LIMITS.maxAnswerTokens };
+}
+
 function groq(name: Provider["name"], model: string): Provider {
   return {
     name,
     url: GROQ_URL,
     key: process.env.GROQ_API_KEY ?? "",
     model,
-    extra: {
-      max_completion_tokens: LIMITS.maxAnswerTokens + REASONING_HEADROOM,
-      reasoning_effort: "low",
-      include_reasoning: false,
-    },
+    extra: groqExtra(model),
   };
+}
+
+/**
+ * Groq models tried after GROQ_FALLBACK_MODEL, in order, on the same key. Each Groq model has
+ * its own free daily quota (1,000 requests and 200,000 tokens a day; headers checked
+ * 2026-11-17), so every model added here adds a day's worth of answers at $0. Only models that
+ * passed scripts/test-fallback-models.ts belong here. GROQ_EXTRA_FALLBACK_MODELS (comma-separated)
+ * replaces this list; "none" turns it off.
+ */
+export const DEFAULT_EXTRA_FALLBACK_MODELS: readonly string[] = ["qwen/qwen3.8-27b"];
+
+export function extraFallbackModels(): string[] {
+  const raw = process.env.GROQ_EXTRA_FALLBACK_MODELS?.trim();
+  if (raw?.toLowerCase() === "none") return [];
+  const list = raw ? raw.split(",") : DEFAULT_EXTRA_FALLBACK_MODELS;
+  return list.map((m) => m.trim()).filter(Boolean);
 }
 
 /** Optional fallback providers, picked with CHAT_FALLBACK_PROVIDER. Add new ones here. */
@@ -173,7 +209,10 @@ const FALLBACKS: Record<string, () => Provider | undefined> = {
       : undefined,
 };
 
-/** Primary: Groq (GROQ_MODEL). Fallback: CHAT_FALLBACK_PROVIDER (default "groq"). */
+/**
+ * Primary: Groq (GROQ_MODEL). Then CHAT_FALLBACK_PROVIDER (default "groq": GROQ_FALLBACK_MODEL),
+ * then the extra Groq models (extraFallbackModels). A model already in the chain is skipped.
+ */
 export function getProviders(): Provider[] {
   const providers: Provider[] = [];
   if (process.env.GROQ_API_KEY && process.env.GROQ_MODEL) {
@@ -181,7 +220,22 @@ export function getProviders(): Provider[] {
   }
   const fallback = FALLBACKS[process.env.CHAT_FALLBACK_PROVIDER?.trim() || "groq"]?.();
   if (fallback) providers.push(fallback);
-  return providers.slice(0, 2);
+  if (process.env.GROQ_API_KEY) {
+    let n = 2;
+    for (const model of extraFallbackModels()) {
+      if (providers.some((p) => p.model === model)) continue;
+      providers.push(groq(`groq-fallback-${n++}`, model));
+    }
+  }
+  return providers;
+}
+
+/** One non-streaming answer from one Groq model (scripts/test-fallback-models.ts). */
+export async function answerWithGroqModel(
+  model: string,
+  messages: LlmMessage[],
+): Promise<{ text?: string; attempt: Attempt }> {
+  return callProvider(groq("groq-fallback-2", model), messages);
 }
 
 async function callProvider(
@@ -247,7 +301,7 @@ async function callProvider(
 }
 
 /**
- * Tries the primary, then the fallback once. Falls back on 429, 5xx, timeout and network
+ * Tries the primary, then each fallback once, in order. Falls back on 429, 5xx, timeout and network
  * errors as specified — and also on other failures (bad key, removed model, empty answer),
  * since a working fallback is better than the busy message. Provider error bodies are never
  * read or returned here (only for a failed router call, see callRouterModel).

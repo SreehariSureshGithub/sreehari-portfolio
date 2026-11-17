@@ -34,6 +34,7 @@ import {
   hasAiToolWording,
   isAiToolQuery,
   isAssistantFollowUp,
+  isWebsiteMakingQuestion,
   isRulesChallenge,
   NEUTRAL_HIRING_QUESTION,
   isLockedRequest,
@@ -1382,6 +1383,17 @@ for (const [message, subject, fixed] of [
       isMisrouted({ intent: "smalltalk", reply: "Hello!", replyReplaced: false }, message),
   );
 }
+for (const [message, expected] of [
+  ["How was this website designed?", true],
+  ["Who built the site?", true],
+  ["Did he design the UI himself?", true],
+  ["What is the website built with?", false],
+  ["What tech stack is the site on?", false],
+  ["Did he build the LiDAR system?", false],
+  ["How was the chatbot built?", false],
+] as [string, boolean][]) {
+  check(`"${message}" → website note ${expected}`, isWebsiteMakingQuestion(message) === expected);
+}
 check(
   "website design question without AI-tool wording is a normal question",
   !hasAiToolWording("How was the site designed?") &&
@@ -1445,7 +1457,9 @@ for (const [query, expected] of [
 }
 check(
   "rule 3 carves out the website and never extends its tools to the assistant",
-  SYSTEM_RULES.includes("His portfolio website's design and front end are different") &&
+  SYSTEM_RULES.includes(
+    "Questions about his portfolio website's design and front end are different",
+  ) &&
     SYSTEM_RULES.includes("never extend them to you") &&
     SYSTEM_RULES.includes("never say whether AI tools were used to build you") &&
     SYSTEM_RULES.includes("Your own stack and how you work are still answered from <context>"),
@@ -1524,10 +1538,10 @@ check(
     websiteAiTools: true,
   });
   check(
-    "website note: after the message, decisions his, AI tools implemented, never 'designed the UI/UX himself'",
+    "website note: after the message, decisions his, AI tools implemented, never 'designed it himself'",
     notes.at(-1)!.role === "system" &&
       notes.at(-1)!.content.includes("the design decisions were his") &&
-      notes.at(-1)!.content.includes("Never say he designed the UI/UX himself") &&
+      notes.at(-1)!.content.includes("Never say he designed the UI/UX or the website himself") &&
       !notes.some((m) =>
         m.content.includes("Note: the visitor asks whether Sreehari used AI tools"),
       ),

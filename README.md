@@ -41,11 +41,13 @@ flowchart TD
         U -->|"failed / timeout / cap"| G{"Fallback: embedding gate<br/>score ≥ 0.57?"}
         G -->|"no: fixed refusal, no LLM call"| S
         G -->|yes| Q
-        Q["Global daily cap<br/>120 answers/day<br/>+ pinned context (profile; this assistant and contact when asked)"]
+        Q["Global daily cap<br/>160 answers/day<br/>+ pinned context (profile; this assistant and contact when asked)"]
         Q --> L1["Groq · openai/gpt-oss-120b<br/>(primary)"]
         L1 -->|"any failure"| L2["Groq · openai/gpt-oss-20b<br/>(fallback, separate quota)"]
+        L2 -->|"any failure"| L3["Groq · qwen/qwen3.8-27b<br/>(second fallback, separate quota)"]
         L1 --> O
-        L2 --> O["Output guard (incremental while streaming)<br/>prompt leak · other phone numbers · unknown URLs/emails"]
+        L2 --> O
+        L3 --> O["Output guard (incremental while streaming)<br/>prompt leak · other phone numbers · unknown URLs/emails"]
         O --> S["Server-Sent Events<br/>tokens streamed as they pass the guard"]
         A["Contact buttons<br/>fixed server config, chosen from the question<br/>+ retrieved chunks, never from the model"] --> S
     end
@@ -64,7 +66,7 @@ happens on the server, and no key is ever sent to the client.
 | Hosting | Vercel Hobby. Nitro builds one Node.js 24 function, and static assets are served from the CDN. The function runs in **fra1 (Frankfurt)**, next to the Upstash database (eu-central-1). |
 | Embeddings | `Xenova/bge-small-en-v1.5` (q8 ONNX, 384 dimensions) via transformers.js 4.3 + onnxruntime-node. It runs inside the function, with no embedding API. |
 | Keyword search | My own BM25 with a shared tokenizer, so build time and query time can't drift apart |
-| LLM | Groq free plan: `openai/gpt-oss-120b`, with `openai/gpt-oss-20b` as fallback, called with plain `fetch` (no SDKs) |
+| LLM | Groq free plan: `openai/gpt-oss-120b`, then `openai/gpt-oss-20b`, then `qwen/qwen3.8-27b` as fallbacks (each with its own daily quota), called with plain `fetch` (no SDKs) |
 | Rate limiting | Upstash Redis free tier (`@upstash/ratelimit`), with an in-memory fallback for local dev |
 | Validation | zod |
 
@@ -155,10 +157,10 @@ happens on the server, and no key is ever sent to the client.
   16 KB body limit, 500-character question limit, and Unicode control and zero-width
   characters stripped.
 - **Rate limits:** per visitor 6/min burst, 40/hour and 30/day. A router reply or a gate
-  refusal counts as 0.25. Globally, 120 main-model answers/day and 120 router calls/day:
-  Groq allows 200,000 tokens/day per model, an answer costs about 1,750 tokens (2,200 for a
-  hiring answer; it was 2,500 and 3,150 before the prompt rewrite of 2026-11-15), and the
-  router shares the fallback model's budget. The arithmetic is in
+  refusal counts as 0.25. Globally, 160 main-model answers/day and 120 router calls/day:
+  Groq allows 200,000 tokens/day per model and three models answer in turn, an answer costs
+  about 2,600 tokens (3,000 for a hiring answer, since the knowledge rewrite of 2026-11-17),
+  and the router shares the first fallback model's budget. The arithmetic is in
   `docs/chatbot/chatbot-settings.md` (Limits). Past the router cap, the gate decides, so nobody gets an error. Each limit has its
   own friendly 429 message, and all values can be changed with env vars.
 - **Secrets:** server-only env vars, none prefixed `VITE_`. After builds I search the client

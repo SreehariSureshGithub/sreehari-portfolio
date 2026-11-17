@@ -276,6 +276,23 @@ export function aiToolSubject(message: string): "website" | "assistant" | "uncle
  * questions about the website's design and front end are not these: knowledge/website.md
  * answers them.
  */
+/**
+ * How the website was designed or built ("How was this website designed?", "Who built the
+ * site?"): its subject is the website and it asks about making it. Gets the website note (see
+ * prompt.server.ts), with or without AI-tool wording.
+ */
+const MAKING_WORDS =
+  /(?<![\p{L}\p{N}])(?:design\w*|buil[dt]\w*|made|make|creat\w*|develop\w*|implement\w*|coded|AI)(?![\p{L}\p{N}])/iu;
+
+/** The site's tech stack ("What is the website built with?"): answered as a stack, no note. */
+const STACK_WORDS =
+  /\b(?:built with|made with|stack|tech|technolog\w*|framework\w*|hosted|hosting)\b/i;
+
+export function isWebsiteMakingQuestion(message: string): boolean {
+  const m = message.replace(/[‘’]/g, "'");
+  return aiToolSubject(m) === "website" && MAKING_WORDS.test(m) && !STACK_WORDS.test(m);
+}
+
 export function isAiToolQuestion(message: string): boolean {
   return hasAiToolWording(message) && aiToolSubject(message) !== "website";
 }
