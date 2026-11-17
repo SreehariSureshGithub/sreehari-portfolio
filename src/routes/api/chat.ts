@@ -448,7 +448,7 @@ async function handleChat(request: Request): Promise<Response> {
     ...(contactAsked && !hiring ? { contactDetails: contactLinesAsked(question) } : {}),
     identity: router.isIdentityQuestion(question),
     aiTools,
-    websiteAiTools: websiteAiTools && !aiTools,
+    websiteAiTools: (websiteAiTools || router.isWebsiteMakingQuestion(question)) && !aiTools,
     truthChallenge,
     rulesChallenge,
   };
