@@ -298,7 +298,16 @@ async function handleChat(request: Request): Promise<Response> {
   // no router. AI-tool questions about the website's design go on as normal questions
   // (knowledge/website.md answers them).
   const aiToolsDirect = router.isAiToolTurn(parsed.messages);
-  if (!aiToolsDirect && router.needsRouter({ firstTurn, question, relevance })) {
+  // An AI-tool question about the website, its subject read with the conversation ("Did he use
+  // AI tools for it?" after "How was this website designed?"). Answered from the knowledge.
+  const websiteAiTools =
+    !aiToolsDirect &&
+    router.hasAiToolWording(question) &&
+    router.aiToolSubjectInContext(parsed.messages) === "website";
+  if (
+    !aiToolsDirect &&
+    router.needsRouter({ firstTurn, question, relevance, websiteFollowUp: websiteAiTools })
+  ) {
     const routerStarted = performance.now();
     if (!LIMITS.routerEnabled) routed = { ok: false, reason: "disabled" };
     else if (!(await rl.admitRouterCall())) routed = { ok: false, reason: "capped" };
@@ -331,10 +340,6 @@ async function handleChat(request: Request): Promise<Response> {
     !aiToolsDirect && plan.kind === "answer" && !!plan.query && router.isAiToolQuery(plan.query);
   if (aiToolsFromQuery) log.aiToolsFromQuery = true;
   const aiTools = aiToolsDirect || aiToolsFromQuery;
-  // An AI-tool question about the website only ("Did he use AI to design the site?"): the
-  // chunk about the assistant is not added, so its answer can't be extended to the assistant.
-  const websiteAiTools =
-    !aiTools && router.hasAiToolWording(question) && router.aiToolSubject(question) === "website";
 
   // Router unavailable and the gate says off-topic: the fixed refusal, no LLM call. A request
   // to show, drop or change the assistant's instructions gets the fixed "can't change how I
@@ -412,7 +417,7 @@ async function handleChat(request: Request): Promise<Response> {
   //     Not for AI-tool questions: its stack is not the answer to them (prompt rule 3).
   const aboutAssistant =
     !aiTools &&
-    !websiteAiTools &&
+    !(websiteAiTools && !aiTools) &&
     (plan.intent === "assistant" ||
       router.mentionsAssistant(question) ||
       (!!plan.query && router.mentionsAssistant(plan.query)));
@@ -443,6 +448,7 @@ async function handleChat(request: Request): Promise<Response> {
     ...(contactAsked && !hiring ? { contactDetails: contactLinesAsked(question) } : {}),
     identity: router.isIdentityQuestion(question),
     aiTools,
+    websiteAiTools: websiteAiTools && !aiTools,
     truthChallenge,
     rulesChallenge,
   };

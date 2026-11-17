@@ -241,7 +241,7 @@ export function isMisrouted(decision: RouterDecision, latestMessage: string): bo
  * about is decided separately (aiToolSubject).
  */
 const AI_TOOL_WORDING =
-  /(?<![\p{L}\p{N}])(?:use[ds]?|using|rel(?:y|ied|ies) on|help(?:ed)? (?:by|from)|with the help of|assisted by|generated (?:by|with)|built with|made with|written (?:by|with)|wrote (?:it )?with)(?: an?| the| any| some)? (?:(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|lovable|coding assistants?|ai[- ](?:tools?|assistants?|coding(?: tools?| assistants?)?|help|pair[- ]programm\w*))(?![\p{L}\p{N}])|ai (?:to|for) (?:build|write|code|make|create|develop|design)\w*|ai (?:for|on|in|with) (?:the |this |that |his |its )?(?:chat ?bots?|assistant|bot|website|web ?site|site|portfolio|front[- ]?end|design|ui|ux|layout|you|it|this|that)(?![\p{L}\p{N}]))|(?<![\p{L}\p{N}])(?:every|each) line(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])by hand(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])(?:all|every bit)(?: of)? the code(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])vibe[- ]?cod/iu;
+  /(?<![\p{L}\p{N}])(?:use[ds]?|using|rel(?:y|ied|ies) on|help(?:ed)? (?:by|from)|with the help of|assisted by|generated (?:by|with)|built with|made with|written (?:by|with)|wrote (?:it )?with)(?: an?| the| any| some)? (?:(?:claude(?: code)?|codex|chat ?gpt|copilot|cursor|windsurf|lovable|coding assistants?|ai[- ](?:tools?|assistants?|coding(?: tools?| assistants?)?|help|pair[- ]programm\w*))(?![\p{L}\p{N}])|ai (?:to|for) (?:build|write|code|make|create|develop|design)\w*|ai (?:for|on|in|with) (?:the |this |that |his |its )?(?:chat ?bots?|assistant|bot|website|web ?site|site|portfolio|front[- ]?end|design|ui|ux|layout|you|it|this|that)(?![\p{L}\p{N}]))|(?<![\p{L}\p{N}])(?:every|each) line(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])by hand(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])(?:all|every bit)(?: of)? the code(?![\p{L}\p{N}])|(?<![\p{L}\p{N}])vibe[- ]?cod|(?<![\p{L}\p{N}])(?:was|were|is) (?:any )?ai(?: tools?)? (?:used|involved)(?: (?:in|for|with|to))? (?:it|that|this|build\w*|mak\w*|creat\w*|design\w*|the (?:site|website|web ?site|portfolio|design|front[- ]?end|ui|chat ?bot|assistant|code)|you)(?![\p{L}\p{N}])/iu;
 
 /** AI-tool wording about any subject: the website, the assistant, or unclear. */
 export function hasAiToolWording(message: string): boolean {
@@ -278,6 +278,36 @@ export function aiToolSubject(message: string): "website" | "assistant" | "uncle
  */
 export function isAiToolQuestion(message: string): boolean {
   return hasAiToolWording(message) && aiToolSubject(message) !== "website";
+}
+
+/** "it", "that", "this", "for that", "the site": a message pointing back at an earlier subject. */
+const BACK_REFERENCE =
+  /(?<![\p{L}\p{N}])(?:it|its|that|this|them|those|there|the (?:same|site|website|web ?site|portfolio|design|ui|front[- ]?end))(?![\p{L}\p{N}])/iu;
+
+/** The website-design answer (knowledge/website.md): it names the tools used for the website. */
+const WEBSITE_ANSWER = /(?<![\p{L}\p{N}])lovable(?![\p{L}\p{N}])/iu;
+
+/**
+ * The subject of the latest message, read with the conversation. A message with its own
+ * subject keeps it. One with no subject but a back-reference ("Did he use AI tools for it?",
+ * "Was AI involved in that?") is about the website when the previous visitor question was about
+ * the website, or the last answer was the website-design answer: "it" is the website there, and
+ * the fixed AI-tools reply would contradict that answer. With no such context (a first message
+ * "Did he use AI to build this?") it stays unclear.
+ */
+export function aiToolSubjectInContext(conversation: Turn[]): "website" | "assistant" | "unclear" {
+  const latest = conversation.at(-1)?.content ?? "";
+  const own = aiToolSubject(latest);
+  if (own !== "unclear") return own;
+  if (!BACK_REFERENCE.test(latest.replace(/[‘’]/g, "'"))) return "unclear";
+  const before = conversation.slice(0, -1);
+  const previousQuestion = before.filter((m) => m.role === "user").at(-1)?.content;
+  const lastAnswer = before.at(-1)?.role === "assistant" ? before.at(-1)!.content : undefined;
+  if (previousQuestion !== undefined && aiToolSubject(previousQuestion) === "website") {
+    return "website";
+  }
+  if (lastAnswer !== undefined && WEBSITE_ANSWER.test(lastAnswer)) return "website";
+  return "unclear";
 }
 
 /**
@@ -334,7 +364,7 @@ export function isAssistantFollowUp(message: string): boolean {
 export function isAiToolTurn(conversation: Turn[]): boolean {
   const users = conversation.filter((m) => m.role === "user").map((m) => m.content);
   const latest = users.at(-1) ?? "";
-  if (isAiToolQuestion(latest)) return true;
+  if (hasAiToolWording(latest)) return aiToolSubjectInContext(conversation) !== "website";
   const earlier = users.slice(0, -1).slice(-3);
   if (isAssistantFollowUp(latest) && earlier.some((q) => hasAiToolWording(q))) return true;
   return (
@@ -533,6 +563,8 @@ export function needsRouter(input: {
   firstTurn: boolean;
   question: string;
   relevance: number;
+  /** An AI-tool follow-up resolved to the website from the conversation. */
+  websiteFollowUp?: boolean;
 }): boolean {
   // Override text always goes through the router, so the question underneath is extracted.
   if (hasPersonaOverride(input.question)) return true;
@@ -542,7 +574,7 @@ export function needsRouter(input: {
   if (isIdentityQuestion(input.question)) return false;
   // These get a fixed meaning in the prompt (rule 3); the router adds nothing to them.
   if (
-    isAiToolQuestion(input.question) ||
+    (isAiToolQuestion(input.question) && !input.websiteFollowUp) ||
     isTruthChallenge(input.question) ||
     isRulesChallenge(input.question)
   )

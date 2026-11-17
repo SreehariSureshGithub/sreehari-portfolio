@@ -645,6 +645,130 @@
           "expect_actions": true
         }
       ]
+    },
+    {
+      "id": "website-it-then-you",
+      "_note": "Added 2026-11-17 (website follow-ups): the production bug: turn 2 must answer about the website (not the AI-tools reply); turn 3 switches to the assistant.",
+      "turns": [
+        {
+          "question": "How was this website designed?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use",
+            "he designed the UI",
+            "designed the UI/UX himself",
+            "Sreehari designed"
+          ],
+          "expect_actions": false,
+          "complete_fact": true,
+          "judge": "Says UI/UX isn't his background, the design decisions were his and AI tools (Lovable, then Claude Code) implemented them; never says he designed the UI/UX himself; nothing about the assistant."
+        },
+        {
+          "question": "Did he use AI tools for it?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use",
+            "he designed the UI",
+            "designed the UI/UX himself",
+            "Sreehari designed"
+          ],
+          "expect_actions": false,
+          "complete_fact": true,
+          "judge": "Says UI/UX isn't his background, the design decisions were his and AI tools (Lovable, then Claude Code) implemented them; never says he designed the UI/UX himself; nothing about the assistant."
+        },
+        {
+          "question": "I meant you",
+          "type": "fact",
+          "may_say_unknown": true,
+          "must_include": [
+            "don't have|do not have|doesn't have|no information",
+            "contact him|reach out to him|reach him|get in touch with him|ask him"
+          ],
+          "must_not_include": [
+            "did not use",
+            "didn't use",
+            "no AI",
+            "without AI",
+            "every line",
+            "Claude",
+            "Codex",
+            "ChatGPT",
+            "Copilot",
+            "Cursor",
+            "Lovable",
+            "Groq",
+            "gpt-oss",
+            "open-source|open source",
+            "RAG",
+            "not aware of",
+            "did not rely",
+            "didn't rely",
+            "built it himself"
+          ],
+          "max_words": 40,
+          "expect_actions": true
+        }
+      ]
+    },
+    {
+      "id": "site-built-ai-involved",
+      "_note": "Added 2026-11-17 (website follow-ups): \"that\" is the website.",
+      "turns": [
+        {
+          "question": "How was the site built?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use",
+            "he designed the UI",
+            "designed the UI/UX himself",
+            "Sreehari designed"
+          ],
+          "expect_actions": false,
+          "complete_fact": true,
+          "judge": "Says UI/UX isn't his background, the design decisions were his and AI tools (Lovable, then Claude Code) implemented them; never says he designed the UI/UX himself; nothing about the assistant."
+        },
+        {
+          "question": "Was AI involved in that?",
+          "type": "fact",
+          "must_include": ["Lovable|Claude Code|AI tools"],
+          "must_not_include": [
+            "assistant",
+            "chatbot",
+            "built you",
+            "built me",
+            "don't have|do not have|no information",
+            "did not use",
+            "didn't use",
+            "he designed the UI",
+            "designed the UI/UX himself",
+            "Sreehari designed"
+          ],
+          "expect_actions": false,
+          "complete_fact": true,
+          "judge": "Says UI/UX isn't his background, the design decisions were his and AI tools (Lovable, then Claude Code) implemented them; never says he designed the UI/UX himself; nothing about the assistant."
+        }
+      ]
     }
   ]
 }

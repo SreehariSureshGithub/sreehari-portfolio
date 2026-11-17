@@ -30,6 +30,7 @@ import {
   isTruthChallenge,
   isAiToolTurn,
   aiToolSubject,
+  aiToolSubjectInContext,
   hasAiToolWording,
   isAiToolQuery,
   isAssistantFollowUp,
@@ -1449,6 +1450,89 @@ check(
     SYSTEM_RULES.includes("never say whether AI tools were used to build you") &&
     SYSTEM_RULES.includes("Your own stack and how you work are still answered from <context>"),
 );
+
+// ------------------------- website follow-ups read with the conversation (2026-11-17) --
+// Production: "How was this website designed?" → open answer; "Did he use AI tools for it?"
+// got the fixed AI-tools reply, contradicting it. "it" is the website there.
+{
+  const u = (content: string) => ({ role: "user" as const, content });
+  const a = (content: string) => ({ role: "assistant" as const, content });
+  const siteQ = "How was this website designed?";
+  const siteA =
+    "UI/UX design isn't his background, so the site was implemented with AI tools: first Lovable, then VS Code with Claude Code. The design decisions were his.";
+  const it = "Did he use AI tools for it?";
+  const thread = [u(siteQ), a(siteA), u(it)];
+  check(
+    `"${siteQ}" → "${it}" is about the website, not the fixed reply`,
+    aiToolSubjectInContext(thread) === "website" && !isAiToolTurn(thread),
+  );
+  const third = [...thread, a(siteA), u("I meant you")];
+  check('… → "I meant you" still gets the fixed reply', isAiToolTurn(third));
+  check(
+    '… → "What about the chatbot?" still gets the fixed reply',
+    isAiToolTurn([...thread, a(siteA), u("What about the chatbot?")]),
+  );
+  const built = [u("How was the site built?"), a(siteA), u("Was AI involved in that?")];
+  check(
+    '"How was the site built?" → "Was AI involved in that?" is about the website',
+    hasAiToolWording("Was AI involved in that?") &&
+      aiToolSubjectInContext(built) === "website" &&
+      !isAiToolTurn(built),
+  );
+  check(
+    "the last answer naming the website tools is enough context",
+    aiToolSubjectInContext([u("Tell me more"), a(siteA), u("Did he use AI for that?")]) ===
+      "website",
+  );
+  check(
+    '"Did he use AI to build this?" as a first message stays unclear → fixed reply',
+    aiToolSubjectInContext([u("Did he use AI to build this?")]) === "unclear" &&
+      isAiToolTurn([u("Did he use AI to build this?")]),
+  );
+  check(
+    'after a question about the assistant, "for it" is not the website',
+    isAiToolTurn([
+      u("How does the chatbot work?"),
+      a("It uses RAG…"),
+      u("Did he use AI tools for it?"),
+    ]),
+  );
+  check(
+    'after a project question, "for it" is not the website',
+    isAiToolTurn([
+      u("Tell me about his traffic project"),
+      a("YOLO…"),
+      u("Did he use AI tools for it?"),
+    ]),
+  );
+  check(
+    "an explicit assistant subject after a website answer keeps the fixed reply",
+    isAiToolTurn([u(siteQ), a(siteA), u("Did he use AI tools to build you?")]),
+  );
+  check(
+    'website follow-ups go through the router (it resolves "it")',
+    needsRouter({ firstTurn: false, question: it, relevance: 0.9, websiteFollowUp: true }) &&
+      !needsRouter({ firstTurn: false, question: it, relevance: 0.9 }),
+  );
+  check(
+    '"Was AI used in his traffic project?" is not AI-tool wording',
+    !hasAiToolWording("Was AI used in his traffic project?"),
+  );
+}
+{
+  const notes = buildModelMessages([{ role: "user", content: "Did he use AI tools for it?" }], [], {
+    websiteAiTools: true,
+  });
+  check(
+    "website note: after the message, decisions his, AI tools implemented, never 'designed the UI/UX himself'",
+    notes.at(-1)!.role === "system" &&
+      notes.at(-1)!.content.includes("the design decisions were his") &&
+      notes.at(-1)!.content.includes("Never say he designed the UI/UX himself") &&
+      !notes.some((m) =>
+        m.content.includes("Note: the visitor asks whether Sreehari used AI tools"),
+      ),
+  );
+}
 
 // ------------------------------------------ prompt changes invalidate cached answers --
 // The live site kept serving a cached answer written under the old rule 2 (2026-11-16).
