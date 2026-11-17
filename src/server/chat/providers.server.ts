@@ -282,7 +282,7 @@ async function callProvider(
     const usage = readUsage(data.usage);
     const finish = data.choices?.[0]?.finish_reason ?? undefined;
     const withUsage = { ...base, ...(finish ? { finish } : {}), ...(usage ? { usage } : {}) };
-    const text = data.choices?.[0]?.message?.content?.trim();
+    const text = stripThink(data.choices?.[0]?.message?.content ?? "");
     if (!text) return { attempt: { ...withUsage, ms: ms(), reason: "empty_answer" } };
     return { text, attempt: { ...withUsage, ms: ms() } };
   } catch (error) {
@@ -337,6 +337,21 @@ type StreamChunk = {
 };
 
 /**
+ * Removes leaked reasoning: <think>…</think> blocks, and everything up to a stray </think>
+ * (Qwen3 sometimes sends a draft answer then "</think>" then the real answer, even with
+ * reasoning off; seen live 2026-11-17).
+ */
+export function stripThink(text: string): string {
+  let out = text.replace(/<think>[\s\S]*?<\/think>/gi, "");
+  const end = out.toLowerCase().lastIndexOf("</think>");
+  if (end !== -1) out = out.slice(end + "</think>".length);
+  return out.replace(/<\/?think>/gi, "").trim();
+}
+
+/** Models whose output is held back and cleaned before it is shown (see stripThink). */
+const BUFFERED = /qwen/i;
+
+/**
  * Streams one provider's answer. onToken returns false to stop (the stream is aborted).
  * The first-token timeout is the provider timeout; the whole answer gets twice that.
  */
@@ -355,6 +370,7 @@ async function streamProvider(
   let usage: Attempt["usage"];
   let quota: Attempt["quota"];
   let finish: string | undefined;
+  const buffered = BUFFERED.test(p.model);
   const attemptOf = (status: Attempt["status"], reason?: string): Attempt => ({
     provider: p.name,
     model: p.model,
@@ -413,12 +429,17 @@ async function streamProvider(
           timer = setTimeout(() => controller.abort(), LIMITS.providerTimeoutMs * 2);
         }
         text += delta;
+        if (buffered) continue;
         if (!onToken(delta)) {
           stopped = true;
           controller.abort();
           break read;
         }
       }
+    }
+    if (buffered && !stopped) {
+      text = stripThink(text);
+      if (text && !onToken(text)) stopped = true;
     }
     if (stopped)
       return { text, started: true, stopped, attempt: attemptOf(200, "stopped_by_guard") };
