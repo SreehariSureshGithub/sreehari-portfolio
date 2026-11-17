@@ -84,15 +84,15 @@ export const SKILL_GROUPS = [
 
 export const EXPERIENCE = [
   {
-    role: "Freelance AI Engineer",
-    company: "Independent",
+    role: "Freelance AI & Automation Engineer",
+    company: "Independent (remote)",
     website: "https://sreehari-developer.vercel.app",
     period: "Aug 2025 — Jul 2026",
     highlights: [
-      "Delivered AI and ML solutions across Computer Vision, NLP and Generative AI use cases",
-      "Built LLM-based chatbots and scripted conversational workflows",
-      "Designed WhatsApp business automation using QuickReply, Google Sheets and Google Apps Script",
-      "Integrated Shopify with lead qualification, product recommendation, customer/order management and follow-up workflows",
+      "Built automation systems and data pipelines for small businesses, end to end: requirements, build, launch and support",
+      "Deckup Nutrition: WhatsApp lead handling and customer service with QuickReply, Google Apps Script and Google Sheets, handling 20–30 inbound leads a day with 24/7 automated replies",
+      "Integrated Shopify so customers get order and shipping updates on WhatsApp automatically",
+      "Car dealership: a Python pipeline reconciling the stock sheet against QuickBooks exports and bank statements per VIN and deal cycle, matching hand-verified results on 99.5% of purchase references",
     ],
   },
   {
@@ -101,12 +101,11 @@ export const EXPERIENCE = [
     website: "https://campervanfactory.com/",
     period: "Nov 2024 — Jul 2025",
     highlights: [
-      "Designed and deployed a hybrid LiDAR + camera obstacle detection system for caravan safety",
-      "Integrated Raspberry Pi, sensors and camera modules for real-time AI inference",
-      "Implemented visual and audio alerting using OpenCV and Python",
-      "Achieved 92% detection accuracy across urban and forest environments",
-      "Reduced power consumption by 25–35% through intelligent camera activation logic",
-      "Conducted real-world validation and iterative performance tuning",
+      "Designed a hybrid LiDAR + camera obstacle warning system for caravan safety, built as a Raspberry Pi prototype",
+      "Separates real hazards from false alarms such as leaves, judging damage risk by obstacle type and height",
+      "Visual and audio alerts to the driver, with real-time on-device inference",
+      "92% detection accuracy in field validation across urban and forest environments",
+      "Cut power consumption by 25–35% with event-triggered camera activation",
     ],
   },
   {
@@ -115,11 +114,11 @@ export const EXPERIENCE = [
     website: "https://ismobiophotonics.com/",
     period: "Aug 2024 — Nov 2024",
     highlights: [
-      "Developed YOLO-based object detection pipelines for dynamic video environments",
-      "Optimized inference using GPU acceleration with ONNX and TensorRT",
-      "Reduced median inference latency from 14ms to 4ms, a 71% improvement",
-      "Curated and labeled 7,500+ training images",
-      "Built real-time video tracking pipelines and performance benchmarks",
+      "Worked on real-time particle counting from line-scan camera imagery",
+      "Benchmarked YOLOv8–v11 on accuracy versus speed and chose YOLOv11s for the prototype",
+      "Annotated 2,500+ line-scan images with segmentation masks and fine-tuned the model on them",
+      "Cut median inference latency from 14 ms to 4 ms (71% faster) on an NVIDIA Jetson Nano with ONNX and TensorRT",
+      "The optimised prototype was used for an investor demo",
     ],
   },
   {
@@ -128,13 +127,12 @@ export const EXPERIENCE = [
     website: "https://www.kanini.com/",
     period: "Jul 2022 — Aug 2022",
     highlights: [
-      "Data cleaning and exploratory analysis in R and Excel",
-      "Supported internal reporting and visualization workflows",
+      "Cleaned and analysed datasets in R and Excel to support internal reporting and visualisation",
     ],
   },
 ];
 
-/** Client and internship work: the code is private, so these show an image and "Private code". */
+/** Featured projects: shown with an image; `codeLabel` says why the code isn't on GitHub. */
 export type WorkProject = {
   title: string;
   /** Small label shown above the title (rendered upper-case). */
@@ -142,6 +140,8 @@ export type WorkProject = {
   image: string;
   tags: string[];
   metric?: string;
+  /** Shown on the right of the card instead of a GitHub link. */
+  codeLabel: "Private code" | "Academic project";
   summary: string;
   detail: string;
 };
@@ -166,21 +166,23 @@ export const WORK_PROJECTS: WorkProject[] = [
     title: "Hybrid LiDAR + Camera Safety System",
     category: "Embedded AI",
     image: lidar,
-    tags: ["YOLO", "TensorRT", "OpenCV", "Raspberry Pi"],
+    tags: ["YOLO", "OpenCV", "Raspberry Pi", "LiDAR"],
     metric: "92% accuracy",
-    summary: "Real-time obstacle detection for caravan safety.",
+    codeLabel: "Private code",
+    summary: "Real-time obstacle warning prototype for caravans, built at Campervan Factory.",
     detail:
-      "Fused LiDAR range data with camera detections on a Raspberry Pi for real-time obstacle alerting. Delivered visual and audio warnings, validated across urban and forest environments, and cut power draw 25–35% with intelligent camera activation logic.",
+      "A real-time obstacle warning prototype for caravans on a Raspberry Pi, built during his internship at Campervan Factory. The LiDAR watches for obstacles and the camera switches on only when it detects something; the system then judges from the obstacle's type and height whether it could cause damage, and warns the driver with visual and audio alerts. It reached 92% detection accuracy in field validation across urban and forest environments, and the event-triggered camera cut power consumption by 25–35%.",
   },
   {
-    title: "Intelligent Traffic Management",
+    title: "Intelligent Traffic Signal Control",
     category: "Computer Vision",
     image: traffic,
     tags: ["YOLO", "OpenCV", "Python"],
     metric: "98% detection accuracy",
-    summary: "Dynamic traffic signal optimization from live video.",
+    codeLabel: "Academic project",
+    summary: "Counts vehicles per lane in live video and adjusts signal timing.",
     detail:
-      "A YOLO-based prototype that processes live video to count vehicles and dynamically adjust signal timings. Achieved 98% detection accuracy in controlled tests, prioritizing high-volume lanes while guaranteeing fairness through minimum wait times.",
+      "An academic project: a live-video prototype that counts vehicles in each lane with YOLO and adjusts traffic-signal timing dynamically. It gives more green time to high-volume lanes while enforcing a minimum wait time for every lane, so no lane is starved. It reached 98% vehicle detection accuracy in controlled tests.",
   },
 ];
 
@@ -193,7 +195,7 @@ export const OPEN_SOURCE_PROJECTS: OpenSourceProject[] = [
     tags: ["RAG", "React", "TanStack Start", "Vercel"],
     summary: "This portfolio, with a RAG assistant that answers recruiters' questions about me.",
     detail:
-      "The site you are on, with a floating chat assistant that answers questions about me using only a knowledge base I wrote myself. Each question goes through hybrid retrieval (local bge-small embeddings plus BM25, merged with rank fusion), and the top three chunks go to Groq's gpt-oss-120b, with gpt-oss-20b as a fallback. A small router model rewrites follow-up questions into standalone queries and turns away off-topic messages. Answers stream through an output guard, with per-visitor rate limits and an answer cache on Upstash Redis, all on free tiers.",
+      "The site you are on, with a floating chat assistant that answers questions about me using only a knowledge base I wrote myself. Each question goes through hybrid retrieval (local bge-small embeddings plus BM25, merged with rank fusion), and the top chunks go to Groq's gpt-oss-120b, with fallback models when it is unavailable. A small router model rewrites follow-up questions into standalone queries and turns away off-topic messages. Answers stream through an output guard, with per-visitor rate limits and an answer cache on Upstash Redis, all on free tiers.",
   },
   {
     title: "VIN Reconciliation Pipeline",

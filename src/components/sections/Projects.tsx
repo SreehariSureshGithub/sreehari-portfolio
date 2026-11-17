@@ -63,9 +63,9 @@ export function Projects() {
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading title="Projects" />
 
-        {/* Work projects: image cards, code is private */}
+        {/* Featured projects: image cards, code not on GitHub */}
         <Reveal className="mt-12">
-          <h3 className={groupLabel}>Work projects</h3>
+          <h3 className={groupLabel}>Featured projects</h3>
         </Reveal>
         <div className="mt-6 grid gap-7 md:grid-cols-2">
           {WORK_PROJECTS.map((p, i) => (
@@ -97,7 +97,7 @@ export function Projects() {
                   </div>
                   <div className="mt-auto flex items-center justify-between gap-3 pt-6">
                     <DetailsButton onClick={() => setActive({ kind: "work", project: p })} />
-                    <span className="text-xs text-muted-foreground">Private code</span>
+                    <span className="text-xs text-muted-foreground">{p.codeLabel}</span>
                   </div>
                 </div>
               </article>
