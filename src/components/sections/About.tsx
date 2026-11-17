@@ -13,8 +13,8 @@ export function About() {
           <div className="max-w-[70ch] space-y-6">
             <Reveal delay={0.1}>
               <p className="text-lg leading-relaxed text-muted-foreground">
-                I'm Sreehari, an <span className="text-foreground">AI engineer based in Dubai</span>,
-                with interests in{" "}
+                I'm Sreehari, an <span className="text-foreground">AI engineer based in Dubai</span>
+                , with interests in{" "}
                 <span className="text-foreground">
                   computer vision, generative AI and intelligent automation
                 </span>
@@ -45,8 +45,8 @@ export function About() {
               <p className="text-lg leading-relaxed text-muted-foreground">
                 Along the way I've learned that{" "}
                 <span className="text-foreground">I learn best by building</span>. That's how I
-                picked up RAG: I built the AI assistant on this site, so feel free to ask it anything
-                about me.
+                picked up RAG: I built the AI assistant on this site, so feel free to ask it
+                anything about me.
               </p>
             </Reveal>
 

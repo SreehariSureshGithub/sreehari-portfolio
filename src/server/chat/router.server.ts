@@ -293,6 +293,18 @@ export function isWebsiteMakingQuestion(message: string): boolean {
   return aiToolSubject(m) === "website" && MAKING_WORDS.test(m) && !STACK_WORDS.test(m);
 }
 
+/**
+ * Whether he worked at, for or with a company ("Has he worked at Google?", "Did he work for
+ * Microsoft?", "Was he employed by Amazon?"). His work history is a complete list (prompt rule
+ * 2), so these get the employer note. Not "Has he worked in a team?" or "with YOLO".
+ */
+const EMPLOYER_QUESTION =
+  /\b(?:has|have|did|was|is|does)\s+(?:he|sreehari)\s+(?:ever\s+)?(?:work(?:ed|s)?|been\s+employed|employed|interned|been\s+an?\s+intern)\s+(?:at|for|by)\s+(?!(?:a|an|the|his|any|other|different|some|clients?|customers?|teams?|startups?|companies|home|himself|free\w*|remote\w*)\b)\w/i;
+
+export function isEmployerQuestion(message: string): boolean {
+  return EMPLOYER_QUESTION.test(message.replace(/[‘’]/g, "'"));
+}
+
 export function isAiToolQuestion(message: string): boolean {
   return hasAiToolWording(message) && aiToolSubject(message) !== "website";
 }

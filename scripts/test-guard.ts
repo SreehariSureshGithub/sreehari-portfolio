@@ -315,7 +315,7 @@ const realLeaks: [string, string][] = [
   ],
   [
     "the Contact rule",
-    "A complete factual answer gets no contact sentence and no closing offer; it ends with the fact. Invite the visitor to contact Sreehari only when (a) context doesn't have what they asked.",
+    "Every other answer, hiring and fit answers included, ends with the fact: no contact sentence and no closing offer, even when buttons appear below it.",
   ],
   [
     "rule 2",

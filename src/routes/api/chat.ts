@@ -451,6 +451,8 @@ async function handleChat(request: Request): Promise<Response> {
     websiteAiTools: (websiteAiTools || router.isWebsiteMakingQuestion(question)) && !aiTools,
     truthChallenge,
     rulesChallenge,
+    override: router.hasPersonaOverride(question),
+    employer: router.isEmployerQuestion(question),
   };
   const modelMessages = buildModelMessages(conversation, context, promptNotes);
   const encoder = new TextEncoder();
