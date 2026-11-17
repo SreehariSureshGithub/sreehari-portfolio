@@ -1,7 +1,7 @@
 # Sreehari Suresh – Profile Overview
 
 ## Who is Sreehari Suresh?
-Sreehari Suresh is an AI Engineer specialising in Computer Vision and Edge AI, who also builds Generative AI, RAG and automation applications. He has about two years of combined industry experience: AI internships at two companies (Aug 2024 – Jul 2025) followed by freelance AI and automation work (Aug 2025 – Jul 2026). He holds an M.Sc. in Artificial Intelligence and is based in Dubai.
+Sreehari Suresh is an AI Engineer specialising in Computer Vision and Edge AI, who also builds Generative AI, RAG and automation applications. He has about two years of combined industry experience: AI internships at ISMO Bio-Photonics (Aug 2024 – Nov 2024) and Campervan Factory (Nov 2024 – Jul 2025) followed by freelance AI and automation work (Aug 2025 – Jul 2026). He holds an M.Sc. in Artificial Intelligence and is based in Dubai.
 
 ## Sreehari Suresh's professional summary
 Sreehari builds real-time computer vision systems, LLM applications and business automation. He cut YOLO inference latency by 71% (from 14 ms to 4 ms) on an NVIDIA Jetson Nano using ONNX and TensorRT, and built a LiDAR + camera obstacle warning prototype on a Raspberry Pi that reached 92% detection accuracy in field validation. He also built the RAG assistant on his own portfolio, and delivers automation systems and data pipelines for businesses.

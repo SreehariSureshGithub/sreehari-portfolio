@@ -4,7 +4,7 @@
 UI/UX design isn't Sreehari's background, so he built his portfolio website with AI tools: the first version on Lovable, then he moved it to VS Code and continued with Claude Code. The design decisions were his, and the AI tools implemented them. This covers the website's design and front end only.
 
 ## What design decisions did Sreehari make for his portfolio website?
-Sreehari directed the website's redesign himself, and AI tools implemented his decisions (Lovable for the first version, then Claude Code). His decisions included:
+Sreehari made the design decisions for the website's redesign, and AI tools implemented them (Lovable for the first version, then Claude Code). His decisions included:
 - Choosing his own colour palette: a dark #1F1F1F background, warm neutral text colours, and a single coral accent (#F76F53) used only for buttons, links and graphical elements.
 - Removing decorative "AI template" effects such as a loading screen, particle backgrounds, glow effects and an animated neural-network graphic, so the content stands out.
 - Replacing self-rated skill percentage bars with plain skill tags.
