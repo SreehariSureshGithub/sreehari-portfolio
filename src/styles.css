@@ -37,6 +37,7 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-surface: var(--surface);
+  --color-status-online: var(--status-online);
   --font-display: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "IBM Plex Mono", ui-monospace, monospace;
@@ -64,6 +65,8 @@
   --border: rgb(209 207 192 / 0.1);
   --input: rgb(209 207 192 / 0.14);
   --ring: #f76f53;
+  /* Only for the chat's online status dot. */
+  --status-online: #3fb950;
 
   --gradient-brand: linear-gradient(var(--primary), var(--primary));
   --glass-bg: var(--card);
