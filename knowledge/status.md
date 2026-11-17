@@ -1,22 +1,24 @@
 # Sreehari Suresh – Current Status (keep this file up to date)
 
 ## What is Sreehari Suresh doing now? (current status)
-Currently, Sreehari is based in Dubai, UAE, and is actively looking for a full-time role as an AI Engineer, Machine Learning Engineer, Computer Vision Engineer or Generative AI / LLM Engineer. While job searching he is building AI projects, including this AI assistant on his portfolio, which uses Retrieval-Augmented Generation (RAG) to answer questions about him.
+Sreehari is based in Dubai, UAE, where he moved in November 2026, and is actively looking for a role as an AI Engineer, Machine Learning Engineer, Computer Vision Engineer, or Generative AI / LLM Engineer. Since his freelance work ended in July 2026 he has been deepening his skills in LLMs and Retrieval-Augmented Generation (RAG), including building this AI assistant on his portfolio, which uses RAG to answer questions about him.
 
 ## Is Sreehari Suresh open to work?
-Yes. Sreehari is actively open to new roles. Reach him by email at sreehari.official0606@gmail.com, by phone or WhatsApp on +971 50 862 4546, or on LinkedIn at https://www.linkedin.com/in/sreeharisureshofficial.
+Yes. Sreehari is actively open to new roles: full-time positions, or contract roles of at least one year, at junior or mid level. He prefers a phone call; from outside the UAE, WhatsApp or email is best.
+- Phone / WhatsApp: +971 50 862 4546
+- Email: sreehari.official0606@gmail.com
+- LinkedIn: https://www.linkedin.com/in/sreeharisureshofficial
 
 ## When can Sreehari start?
-Sreehari is available to join immediately.
+Sreehari has no notice period and can join immediately.
 
 ## What is Sreehari's visa status?
-<!-- This is on your CV. Delete this section if you'd rather the bot not answer it. -->
-Sreehari is an Indian national currently in Dubai on a visit visa, and is available to join immediately.
+Sreehari is an Indian national, currently in Dubai on a visit visa. He needs the hiring company to provide an employment visa, and he can join immediately.
 
-## What kind of work arrangement does Sreehari prefer?
-[FILL: e.g. "Sreehari is open to on-site, hybrid or remote roles in Dubai and the wider UAE."]
+## Where is Sreehari based, and what work arrangement does he prefer?
+Sreehari is based in Dubai and is open to roles across the UAE. He prefers onsite or hybrid work.
 
-## Which industries interest Sreehari?
-Sreehari is especially interested in AI startups and tech companies, smart city and government technology, security and surveillance, retail and e-commerce, logistics, proptech, fintech, and AI consultancies or system integrators.
+## Which companies and industries interest Sreehari?
+Sreehari is most drawn to research-oriented work and research-driven companies, and he also enjoys building products and practical solutions. Industries that interest him include AI startups and tech companies, smart city and government technology, security and surveillance, retail and e-commerce, logistics, proptech, fintech, and AI consultancies or system integrators.
 
-<!-- Last updated: 2026-11-11. After editing: npm run build:index, then commit and push. -->
+<!-- Last updated: 2026-11-17. After editing: npm run build:index, then commit and push. -->
