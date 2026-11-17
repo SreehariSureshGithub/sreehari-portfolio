@@ -23,5 +23,5 @@
 ## Fix on the website itself (src/data/portfolio.ts / sections)
 - [ ] "Images Annotated 7500+" → CV says 2,500+
 - [ ] Location "Trivandrum" → Dubai
-- [ ] Freelance role shows "Present" → CV says Aug 2025 – Jul 2026
+- [ ] Freelance role shows "Present" → CV says Aug 2025 – Sept 2026
 - [ ] Freelance link missing https://, typo "PROFESSONAL EXPERIENCE"

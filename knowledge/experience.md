@@ -1,6 +1,6 @@
 # Sreehari Suresh – Work Experience
 
-## Sreehari Suresh – Freelance AI & Automation Engineer, Remote (Aug 2025 – Jul 2026)
+## Sreehari Suresh – Freelance AI & Automation Engineer, Remote (Aug 2025 – Sept 2026)
 From August 2025 to July 2026 Sreehari worked as a freelance AI and automation engineer, building automation systems and data pipelines for small businesses. He worked directly with clients, from gathering requirements to launch and post-launch support.
 Tools used in this role: WhatsApp Business (QuickReply), Google Apps Script, Google Sheets, Shopify, Python, pandas, QuickBooks exports, Excel.
 
@@ -42,11 +42,11 @@ Tools used in this role: R, Excel.
 - Cleaned and analysed datasets in R and Excel to support internal reporting and visualisation.
 
 ## How much experience does Sreehari Suresh have?
-Sreehari has about two years of combined experience: around one year of AI internships, at ISMO Bio-Photonics (Aug 2024 – Nov 2024) and then Campervan Factory (Nov 2024 – Jul 2025), then about a year of freelance AI and automation work (Aug 2025 – Jul 2026). He also completed a one-month data analyst internship in 2022.
+Sreehari has about two years of combined experience: around one year of AI internships, at ISMO Bio-Photonics (Aug 2024 – Nov 2024) and then Campervan Factory (Nov 2024 – Jul 2025), then about a year of freelance AI and automation work (Aug 2025 – Sept 2026). He also completed a one-month data analyst internship in 2022.
 
 ## Which companies has Sreehari Suresh worked for?
 This is Sreehari's complete work history; he has not worked for any other company:
-- Freelance AI & Automation Engineer, remote (Aug 2025 – Jul 2026), with clients including Deckup Nutrition and a car dealership.
+- Freelance AI & Automation Engineer, remote (Aug 2025 – Sept 2026), with clients including Deckup Nutrition and a car dealership.
 - ISMO Bio-Photonics Pvt. Ltd., Chennai: AI Intern (Aug 2024 – Nov 2024).
 - Campervan Factory Pvt. Ltd., Chennai: AI Intern (Nov 2024 – Jul 2025).
 - Kanini Software Solutions Pvt. Ltd., Coimbatore: Data Analyst Intern (Jul 2022 – Aug 2022).

@@ -87,7 +87,7 @@ export const EXPERIENCE = [
     role: "Freelance AI & Automation Engineer",
     company: "Independent (remote)",
     website: "https://sreehari-developer.vercel.app",
-    period: "Aug 2025 — Jul 2026",
+    period: "Aug 2025 — Sept 2026",
     highlights: [
       "Built automation systems and data pipelines for small businesses, end to end: requirements, build, launch and support",
       "Deckup Nutrition: WhatsApp lead handling and customer service with QuickReply, Google Apps Script and Google Sheets, handling 20–30 inbound leads a day with 24/7 automated replies",

@@ -1045,7 +1045,7 @@ the chip rebuild come first, before the merge.
 
 ### Site text
 - About: "Trivandrum, India" → "Dubai, UAE".
-- Freelance role: "Aug 2025 — Present" → "Aug 2025 — Jul 2026", matching the knowledge
+- Freelance role: "Aug 2025 — Present" → "Aug 2025 — Sept 2026", matching the knowledge
   files.
 - Experience heading: "PROFESSONAL" → "PROFESSIONAL".
 - The freelance link had no `https://`, so it was a *relative* URL that opened a broken path
