@@ -1,12 +1,24 @@
 {
   "knowledgeHash": "sha256:955a267f664ad96b7f17d21fae55e63c272c6a6e7d03d0b10c1088bc2bdb3c34",
   "promptHash": "sha256:5ee4b65d48ff6c21876661a0ab445e88",
-  "generatedAt": "2026-11-17T15:05:26.767Z",
+  "generatedAt": "2026-11-18T04:39:38.353Z",
   "model": "openai/gpt-oss-120b",
   "answers": [
     {
       "question": "What is Sreehari doing now?",
       "answer": "Sreehari is based in Dubai, UAE, where he moved in November 2026, and is actively looking for a role as an AI Engineer, Machine Learning Engineer, Computer Vision Engineer, or Generative AI/LLM Engineer. Since his freelance work ended in July 2026 he has been deepening his skills in LLMs and Retrieval‑Augmented Generation, including building the RAG assistant on his portfolio."
+    },
+    {
+      "question": "What's his work experience?",
+      "answer": "Sreehari’s work experience includes:\n\n- AI Intern at ISMO Bio‑Photonics (Aug 2024 – Nov 2024)  \n- AI Intern at Campervan Factory (Nov 2024 – Jul 2025)  \n- Freelance AI and automation projects (Aug 2025 – Sept 2026)  \n- One‑month data analyst internship in 2022 (company not specified)"
+    },
+    {
+      "question": "What computer vision projects has he built?",
+      "answer": "Sreehari has built:\n\n- Hybrid LiDAR + Camera Safety System (92% detection accuracy, 25–35% lower power)\n- Real‑time particle counting at ISMO Bio‑Photonics (YOLOv11s, 4 ms/frame on Jetson Nano)\n- Intelligent Traffic Signal Control (98% vehicle detection)\n- Fake Currency Detection (ORB + SSIM)\n- Lightweight keyword‑spotting CNN (96.9% accuracy)\n- Smaller projects: LeNet‑5 for MNIST and Image Steganography."
+    },
+    {
+      "question": "How can I contact him?",
+      "answer": "Phone / WhatsApp: +971 50 862 4546  \nEmail: sreehari.official0606@gmail.com  \nLinkedIn: linkedin.com/in/sreeharisureshofficial"
     }
   ]
 }

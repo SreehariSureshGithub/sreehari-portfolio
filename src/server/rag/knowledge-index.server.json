@@ -7,7 +7,7 @@
   "normalized": true,
   "queryPrefix": "Represent this sentence for searching relevant passages: ",
   "dimension": 384,
-  "builtAt": "2026-11-17T15:02:19.370Z",
+  "builtAt": "2026-11-18T04:39:14.693Z",
   "contentHash": "sha256:955a267f664ad96b7f17d21fae55e63c272c6a6e7d03d0b10c1088bc2bdb3c34",
   "sources": [
     {
